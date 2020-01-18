@@ -11,6 +11,7 @@ const options = {
 		themes: {
 			light: {
 				primary: '#435e40',
+				secondary: '#717171',
 				defaultPrimary: '#0069bd',
 				defaultSecondary: '#424242',
 				defaultAccent: '#82B1FF',
