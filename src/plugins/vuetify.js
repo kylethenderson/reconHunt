@@ -6,17 +6,18 @@ Vue.use(Vuetify);
 const options = {
 	icons: {
 		iconfont: 'mdi',
-		},
-		theme: {
+	},
+	theme: {
 		themes: {
 			light: {
-				primary: '#0069bd',
-				secondary: '#424242',
-				accent: '#82B1FF',
-				error: '#FF5252',
-				info: '#0069bd',
-				success: '#4CAF50',
-				warning: '#FFC107',
+				primary: '#435e40',
+				defaultPrimary: '#0069bd',
+				defaultSecondary: '#424242',
+				defaultAccent: '#82B1FF',
+				defaultError: '#FF5252',
+				defaultInfo: '#0069bd',
+				defaultSuccess: '#4CAF50',
+				defaultWarning: '#FFC107',
 			}
 		}
 	}
