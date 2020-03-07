@@ -1,23 +1,17 @@
 <template>
 	<v-app>
-		<v-app-bar app color="primary" dark>
-			<v-toolbar-title class="nav-title">Recon Hunt</v-toolbar-title>
-			<v-spacer></v-spacer>
-			<v-toolbar-items>
-				<v-btn text>Log In</v-btn>
-				<v-btn text>Sign Up</v-btn>
-			</v-toolbar-items>
-		</v-app-bar>
-
-		<v-content></v-content>
+		<Header v-if="$route.name !== 'login'" />
+		<v-content>
+			<router-view></router-view>
+		</v-content>
 	</v-app>
 </template>
 
 <script>
+import Header from "./components/header";
 export default {
 	name: "App",
-
-	components: {},
+	components: { Header },
 
 	data: () => ({
 		//
@@ -26,9 +20,4 @@ export default {
 </script>
 
 <style scoped>
-.nav-title {
-	text-transform: uppercase;
-	font-size: 2rem;
-	letter-spacing: 3px;
-}
 </style>
