@@ -1,7 +1,7 @@
 <template>
 	<div id="loginView">
 		<v-row justify="center" class="fill-height" align="center">
-			<v-col :cols="login ? '4' : '6'">
+			<v-col cols="10" sm="8" md="6" lg="4">
 				<v-card class="pt-3">
 					<v-row>
 						<v-col class="text-center">

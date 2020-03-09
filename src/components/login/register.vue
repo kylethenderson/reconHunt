@@ -2,7 +2,7 @@
 	<div>
 		<v-form ref="registerForm" lazy-validation v-model="valid">
 			<v-row justify="center" class="mb-6">
-				<v-col cols="5">
+				<v-col cols="10" md="5">
 					<v-text-field
 						aria-autocomplete="off"
 						hide-details="auto"
@@ -11,7 +11,7 @@
 						v-model="firstName"
 					></v-text-field>
 				</v-col>
-				<v-col cols="5">
+				<v-col cols="10" md="5">
 					<v-text-field
 						aria-autocomplete="off"
 						hide-details="auto"
@@ -20,7 +20,7 @@
 						v-model="lastName"
 					></v-text-field>
 				</v-col>
-				<v-col cols="5">
+				<v-col cols="10" md="5">
 					<v-text-field
 						aria-autocomplete="off"
 						hide-details="auto"
@@ -30,7 +30,7 @@
 						:error-messages="emailExists"
 					></v-text-field>
 				</v-col>
-				<v-col cols="5">
+				<v-col cols="10" md="5">
 					<v-text-field
 						aria-autocomplete="off"
 						type="text"
@@ -41,7 +41,7 @@
 						v-model="phone"
 					></v-text-field>
 				</v-col>
-				<v-col cols="5">
+				<v-col cols="10" md="5">
 					<v-text-field
 						aria-autocomplete="off"
 						hide-details="auto"
@@ -51,7 +51,7 @@
 						:error-messages="usernameExists"
 					></v-text-field>
 				</v-col>
-				<v-col cols="5">
+				<v-col cols="10" md="5">
 					<v-text-field
 						aria-autocomplete="off"
 						:rules="[rules.required, rules.password]"
@@ -63,8 +63,8 @@
 						v-model="password"
 					></v-text-field>
 				</v-col>
-				<v-col cols="5"></v-col>
-				<v-col cols="5">
+				<v-col cols="10" md="5"></v-col>
+				<v-col cols="10" md="5">
 					<v-text-field
 						aria-autocomplete="off"
 						:append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
