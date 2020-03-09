@@ -73,20 +73,23 @@ export default {
 				.digest("hex");
 
 			try {
-				const loginResponse = await this.$axios.post(
+				const response = await this.$axios.post(
 					`${this.apiPath}/api/user/login`,
 					{
 						username: this.username,
 						password: hashedPassword
 					}
 				);
-				console.log(loginResponse.data);
 
 				// commit tokens to the store
-
-				// push user to the home page
+				this.$store.commit("login", response.data);
 
 				this.loading = false;
+
+				this.$refs.loginForm.reset();
+
+				// reroute user to the home page
+				this.$router.push("/");
 			} catch (error) {
 				console.log("login error", error);
 				this.loading = false;
