@@ -1,7 +1,6 @@
 <template>
 	<div>
 		<h1>home</h1>
-		{{ $store.state }}
 	</div>
 </template>
 
