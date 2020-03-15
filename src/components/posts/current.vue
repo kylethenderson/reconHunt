@@ -1,5 +1,9 @@
 <template>
-	<div>Welcome to Recon Hunt!</div>
+	<div>
+		<p>current postings</p>
+		<p>we'll need a search</p>
+		<p>and a list of all postings</p>
+	</div>
 </template>
 
 <script>

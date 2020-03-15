@@ -1,5 +1,7 @@
 <template>
-	<div>Welcome to Recon Hunt!</div>
+	<v-container>
+		<router-view></router-view>
+	</v-container>
 </template>
 
 <script>
@@ -20,4 +22,7 @@ export default {
 </script>
 
 <style lang='scss' scoped>
+h2 {
+	font-weight: 300;
+}
 </style>

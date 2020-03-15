@@ -4,11 +4,9 @@ import routes from './routes';
 
 Vue.use(VueRouter);
 
-const loggedIn = localStorage.rHToken;
-
-const isLoggedIn = (path) => {
+const verifyToken = (path) => {
 	// if user is logged in or we're at login
-	if (loggedIn || path === '/login') return true
+	if (localStorage.rHToken || path === '/login') return true
 	// 
 	return false
 }
@@ -19,7 +17,7 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-	if (!isLoggedIn(to.path)) next({ path: '/login' })
+	if (!verifyToken(to.path)) next({ path: '/login' })
 	else next()
 })
 

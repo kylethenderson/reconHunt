@@ -5,8 +5,16 @@
 				<h2>Create a new post</h2>
 			</v-col>
 		</v-row>
-		<v-select :items="postAreas" label="Select Area" v-model="post.area"></v-select>
-		<v-text-field label="Post Title" v-model="post.title"></v-text-field>
+		<v-container>
+			<v-select :items="postAreas" label="Select Area" v-model="post.area"></v-select>
+			<v-text-field label="Title" v-model="post.title"></v-text-field>
+			<v-textarea label="Message" v-model="post.message"></v-textarea>
+			<v-row justify="end">
+				<v-col cols="4">
+					<v-btn block color="primary">Post</v-btn>
+				</v-col>
+			</v-row>
+		</v-container>
 	</div>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-	<div>Welcome to Recon Hunt!</div>
+	<div>user settings</div>
 </template>
 
 <script>
@@ -20,4 +20,7 @@ export default {
 </script>
 
 <style lang='scss' scoped>
+h2 {
+	font-weight: 300;
+}
 </style>
