@@ -4,7 +4,7 @@ import routes from './routes';
 
 Vue.use(VueRouter);
 
-const loggedIn = localStorage.token;
+const loggedIn = localStorage.rHToken;
 
 const isLoggedIn = (path) => {
 	// if user is logged in or we're at login

@@ -28,7 +28,7 @@
 			</v-row>
 			<v-row>
 				<v-col color="primary" class="text-center">
-					<v-btn color="primary" :loading="loading" @click="login">Log In</v-btn>
+					<v-btn color="primary" :loading="loading" :disabled="loading" @click="login">Log In</v-btn>
 				</v-col>
 			</v-row>
 		</v-form>
