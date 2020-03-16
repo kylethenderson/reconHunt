@@ -15,13 +15,34 @@ export default {
 	components: { Header },
 
 	data: () => ({
+		refreshInterval: null,
 		//
+		apiPath: process.env.VUE_APP_BASE_PATH || "http://localhost:3000"
 	}),
 	methods: {
 		//
+		startRefreshInterval() {
+			this.refreshInterval = setInterval(async () => {
+				console.log("refreshing");
+				const tokens = await this.$axios({
+					method: "post",
+					url: `${this.apiPath}/api/user/refreshToken`,
+					data: {
+						token: this.$store.state.auth.refreshToken
+					}
+				});
+				this.$store.commit("updateTokens", tokens.data);
+			}, 60000 * 15);
+		}
 	},
 	mounted() {
 		this.$store.commit("checkLocalStorage");
+	},
+	created() {
+		this.startRefreshInterval();
+	},
+	beforeDestroy() {
+		clearInterval(this.interval);
 	}
 };
 </script>

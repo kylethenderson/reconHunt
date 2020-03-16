@@ -97,7 +97,7 @@ export default {
 <style lang='scss' scoped>
 .nav-title {
 	text-transform: uppercase;
-	font-size: 2rem;
+	font-size: 1.25rem;
 	letter-spacing: 3px;
 }
 .nav-title:hover {

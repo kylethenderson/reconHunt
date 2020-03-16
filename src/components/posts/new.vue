@@ -11,7 +11,7 @@
 			<v-textarea label="Message" v-model="post.message"></v-textarea>
 			<v-row justify="end">
 				<v-col cols="4">
-					<v-btn block color="primary">Post</v-btn>
+					<v-btn block color="primary" >Post</v-btn>
 				</v-col>
 			</v-row>
 		</v-container>

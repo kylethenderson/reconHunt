@@ -59,6 +59,17 @@ const store = new Vuex.Store({
 			// clear tokens from localStorage
 			localStorage.removeItem('rHToken');
 			localStorage.removeItem('rHRefreshToken');
+		},
+		updateTokens(state, payload) {
+			// set tokens from login in store
+			state.auth = payload;
+
+			const { user } = decodeToken(payload.token);
+			state.user = user;
+
+			// and also in localStorage
+			localStorage.rHToken = payload.token;
+			localStorage.rHRefreshToken = payload.refreshToken;
 		}
 	}
 });
