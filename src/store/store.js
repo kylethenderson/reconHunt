@@ -9,6 +9,7 @@ Vue.use(Vuex);
 
 const decodeToken = (token) => {
 	const decoded = jwt.decode(token);
+	console.log(decoded);
 	return decoded;
 }
 
@@ -24,6 +25,7 @@ const store = new Vuex.Store({
 	},
 	mutations: {
 		checkLocalStorage(state) {
+			// put tokens from local storage in the app
 			if (localStorage.rHToken) {
 				state.auth.token = localStorage.rHToken;
 				const { user } = decodeToken(localStorage.rHToken);
@@ -62,6 +64,7 @@ const store = new Vuex.Store({
 		},
 		updateTokens(state, payload) {
 			// set tokens from login in store
+			console.log('update Tokens', payload);
 			state.auth = payload;
 
 			const { user } = decodeToken(payload.token);

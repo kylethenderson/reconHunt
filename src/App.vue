@@ -9,6 +9,7 @@
 
 <script>
 import Header from "./components/header";
+import jwt from "jsonwebtoken";
 
 export default {
 	name: "App",
@@ -21,25 +22,31 @@ export default {
 	}),
 	methods: {
 		//
+		async refreshTokens() {
+			console.log("setting refresh interval");
+			const tokens = await this.$axios({
+				method: "post",
+				url: `${this.apiPath}/api/user/refreshToken`,
+				data: {
+					token: this.$store.state.auth.refreshToken
+				}
+			});
+			this.$store.commit("updateTokens", tokens.data);
+		},
 		startRefreshInterval() {
-			this.refreshInterval = setInterval(async () => {
-				console.log("refreshing");
-				const tokens = await this.$axios({
-					method: "post",
-					url: `${this.apiPath}/api/user/refreshToken`,
-					data: {
-						token: this.$store.state.auth.refreshToken
-					}
-				});
-				this.$store.commit("updateTokens", tokens.data);
-			}, 60000 * 15);
+			this.refreshInterval = setInterval(this.refreshTokens, 60000 * 14);
 		}
 	},
 	mounted() {
 		this.$store.commit("checkLocalStorage");
 	},
 	created() {
-		this.startRefreshInterval();
+		// on create, refresh tokens if we need to
+		if (localStorage.rHToken) {
+			const decoded = jwt.decode(localStorage.rHToken);
+			if (decoded.exp < Date.now()) this.refreshTokens();
+			this.startRefreshInterval();
+		}
 	},
 	beforeDestroy() {
 		clearInterval(this.interval);

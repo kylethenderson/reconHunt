@@ -2,9 +2,10 @@ import Home from '../components/home'
 import Login from '../components/login'
 import Post from '../components/posts'
 import NewPost from '../components/posts/new'
-import CurrentPosts from '../components/posts/current'
+import PostList from '../components/posts/list'
 import User from '../components/user'
 import UserSettings from '../components/user/settings'
+import ViewPost from '../components/posts/view'
 
 const routes = [
 	{
@@ -27,8 +28,12 @@ const routes = [
 				component: NewPost,
 			},
 			{
-				path: 'current',
-				component: CurrentPosts,
+				path: 'list',
+				component: PostList,
+			},
+			{
+				path: 'view/:id',
+				component: ViewPost,
 			}
 
 		]

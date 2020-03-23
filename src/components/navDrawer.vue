@@ -48,7 +48,7 @@ export default {
 			{
 				text: "Current Posts",
 				icon: "mdi-format-list-bulleted",
-				to: "/posts/current"
+				to: "/posts/list"
 			},
 			{
 				text: "New Post",
