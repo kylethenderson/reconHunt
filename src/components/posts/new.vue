@@ -6,10 +6,10 @@
 			</v-col>
 		</v-row>
 		<v-container>
-			<form ref="postForm">
-				<v-select :items="postAreas" label="Property Area" v-model="area"></v-select>
-				<v-text-field label="Title" v-model="title"></v-text-field>
-				<v-textarea label="Property Description" v-model="description"></v-textarea>
+			<v-form ref="postForm" v-model="valid">
+				<v-select :rules="[rules.required]" :items="postAreas" label="Property Area" v-model="area"></v-select>
+				<v-text-field :rules="[rules.required]" label="Title" v-model="title"></v-text-field>
+				<v-textarea :rules="[rules.required]" label="Property Description" v-model="description"></v-textarea>
 				<v-dialog ref="dialog" v-model="modal" :return-value.sync="dates" persistent width="290px">
 					<template v-slot:activator="{ on }">
 						<v-text-field
@@ -18,6 +18,7 @@
 							append-outer-icon="mdi-calendar"
 							readonly
 							v-on="on"
+							:rules="[rules.required]"
 						></v-text-field>
 					</template>
 					<v-date-picker color="primary" v-model="dates" range scrollable>
@@ -27,7 +28,14 @@
 					</v-date-picker>
 				</v-dialog>
 				<p class="mb-0 mt-3">Select Allowed Hunting Category</p>
-				<v-checkbox color="primary" hide-details v-model="category" label="Deer" value="deer"></v-checkbox>
+				<v-checkbox
+					color="primary"
+					hide-details
+					v-model="category"
+					label="Deer"
+					value="deer"
+					:error="!!categoryError"
+				></v-checkbox>
 				<template v-if="includesDeer">
 					<v-row justify="center">
 						<v-col cols="12" class="pa-0 text-center">
@@ -41,6 +49,7 @@
 								v-model="deerWeapon"
 								label="Bow"
 								value="bow"
+								:error="!!methodError"
 							></v-checkbox>
 						</v-col>
 						<v-col cols="3">
@@ -51,23 +60,51 @@
 								v-model="deerWeapon"
 								label="Slug"
 								value="slug"
+								:error="!!methodError"
 							></v-checkbox>
 						</v-col>
 						<v-col cols="3">
 							<v-checkbox
 								color="primary"
 								class="mt-0"
-								hide-details
+								hide-details="auto"
 								v-model="deerWeapon"
 								label="Rifle"
 								value="rifle"
+								:error="!!methodError"
 							></v-checkbox>
 						</v-col>
+						<p
+							v-if="!!methodError"
+							style="margin: 0; padding: 0; color: #FF5252"
+							class="caption"
+						>At least one weapon required for deer hunting.</p>
 					</v-row>
 				</template>
-				<v-checkbox color="primary" hide-details v-model="category" label="Upland" value="upland"></v-checkbox>
-				<v-checkbox color="primary" hide-details v-model="category" label="Turkey" value="turkey"></v-checkbox>
-				<v-checkbox color="primary" hide-details v-model="category" label="Varmint" value="varmint"></v-checkbox>
+				<v-checkbox
+					color="primary"
+					hide-details
+					v-model="category"
+					label="Upland"
+					value="upland"
+					:error="!!categoryError"
+				></v-checkbox>
+				<v-checkbox
+					color="primary"
+					hide-details
+					v-model="category"
+					label="Turkey"
+					value="turkey"
+					:error="!!categoryError"
+				></v-checkbox>
+				<v-checkbox
+					color="primary"
+					hide-details="auto"
+					v-model="category"
+					label="Varmint"
+					value="varmint"
+					:error-messages="categoryError"
+				></v-checkbox>
 				<v-row>
 					<v-col cols="6">
 						<v-text-field
@@ -75,6 +112,7 @@
 							type="number"
 							label="Huntable Acres"
 							v-model="huntableAcres"
+							:rules="[rules.required]"
 						></v-text-field>
 					</v-col>
 					<v-col cols="6">
@@ -84,10 +122,11 @@
 							type="number"
 							label="Cost/day"
 							v-model="price"
+							:rules="[rules.required]"
 						></v-text-field>
 					</v-col>
 				</v-row>
-			</form>
+			</v-form>
 			<v-row justify="end">
 				<v-col cols="4">
 					<v-btn block color="primary" :loading="posting" :disabled="posting" @click="createPost">Post</v-btn>
@@ -110,6 +149,13 @@ export default {
 		deerWeapon: [],
 		huntableAcres: "",
 		price: "",
+		//
+		rules: {
+			required: val => !!val || "Input is required"
+		},
+		valid: true,
+		categoryError: "",
+		methodError: "",
 		//
 		postAreas: [
 			{ text: "Minneapolis", value: "msp" },
@@ -141,6 +187,29 @@ export default {
 		},
 		async createPost() {
 			this.posting = true;
+			// clear errors
+			// this.$refs.postForm.resetValidation();
+			this.categoryError = "";
+			this.methodError = "";
+
+			// validate the form
+			const valid = this.$refs.postForm.validate();
+			const hasCategory = !!this.category.length;
+			if (!hasCategory)
+				this.categoryError = "At least one category required.";
+			let deerMethod = true;
+			if (this.category.includes("deer")) {
+				let deerMethod = !!this.deerWeapon.length;
+				if (!deerMethod)
+					this.methodError =
+						"At least one method required for deer hunting.";
+			}
+			if (!valid || !hasCategory || !deerMethod) {
+				this.posting = false;
+				return;
+			}
+
+			// cool, everything is validated.
 			let post = {
 				area: this.area,
 				title: this.title,
@@ -155,10 +224,8 @@ export default {
 				huntableAcres: this.huntableAcres
 			};
 
-			console.log(post);
-
 			try {
-				const response = await this.$axios({
+				await this.$axios({
 					method: "post",
 					url: `${this.apiPath}/api/post/create`,
 					headers: {
@@ -166,7 +233,6 @@ export default {
 					},
 					data: post
 				});
-				console.log(response);
 				this.dialogs.success = true;
 			} catch (error) {
 				console.log("Error creating post", error.response.message);
