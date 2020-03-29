@@ -23,7 +23,6 @@ export default {
 	methods: {
 		//
 		async refreshTokens() {
-			console.log("setting refresh interval");
 			const tokens = await this.$axios({
 				method: "post",
 				url: `${this.apiPath}/api/user/refreshToken`,

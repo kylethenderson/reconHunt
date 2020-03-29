@@ -9,7 +9,6 @@ Vue.use(Vuex);
 
 const decodeToken = (token) => {
 	const decoded = jwt.decode(token);
-	console.log(decoded);
 	return decoded;
 }
 
@@ -64,7 +63,6 @@ const store = new Vuex.Store({
 		},
 		updateTokens(state, payload) {
 			// set tokens from login in store
-			console.log('update Tokens', payload);
 			state.auth = payload;
 
 			const { user } = decodeToken(payload.token);

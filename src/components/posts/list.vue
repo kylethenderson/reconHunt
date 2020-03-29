@@ -17,7 +17,7 @@
 					<v-menu offset-y>
 						<template v-slot:activator="{ on }">
 							<v-btn icon v-on="on">
-								<v-icon>mdi-filter-menu-outline</v-icon>
+								<v-icon class="filter">mdi-filter-menu-outline</v-icon>
 							</v-btn>
 						</template>
 						<v-list>
@@ -39,16 +39,21 @@
 						</v-list>
 					</v-menu>
 				</v-col>
-				<!-- <v-col cols="2">
-					<v-btn icon>
-						<v-icon>mdi-close-circle-outline</v-icon>
+				<v-col cols="2">
+					<v-btn icon @click="newPost">
+						<v-icon class="plus">mdi-plus-circle-outline</v-icon>
 					</v-btn>
-				</v-col>-->
+				</v-col>
 			</v-row>
 		</v-toolbar>
-		<v-row>
-			<v-col>
+		<v-row justify="space-between">
+			<v-col cols="6">
 				<h3>{{ posts.length }} Listings</h3>
+			</v-col>
+			<v-col cols="6" class="text-right">
+				<v-icon>mdi-chevron-left</v-icon>
+				<span style="position: relative; top: 2px; font-size: 16px; margin: 10px 0px;">1-25 of 256</span>
+				<v-icon>mdi-chevron-right</v-icon>
 			</v-col>
 		</v-row>
 		<template v-if="posts.length > 0">
@@ -112,6 +117,9 @@ export default {
 			console.log(post);
 			// route to single post page
 			this.$router.push(`/posts/view/${post.uuid}`);
+		},
+		async newPost() {
+			this.$router.push("/posts/new");
 		}
 	},
 	computed: {
@@ -141,8 +149,11 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-.v-icon {
-	font-size: 28px !important;
+.v-icon.filter {
+	font-size: 30px !important;
+}
+.v-icon.plus {
+	font-size: 32px;
 }
 p {
 	margin-bottom: 0;

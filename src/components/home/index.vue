@@ -5,7 +5,7 @@
 		<p>Get Started</p>
 		<v-row>
 			<v-col class="text-center" cols="6">
-				<v-btn text color="primary" to="/posts/current">View Postings</v-btn>
+				<v-btn text color="primary" to="/posts/list">View Postings</v-btn>
 			</v-col>
 			<v-col class="text-center" cols="6">
 				<v-btn text color="primary" to="posts/new">Create Post</v-btn>

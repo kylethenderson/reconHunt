@@ -11,6 +11,32 @@ import store from './store/store'
 
 Vue.prototype.$axios = axios;
 
+// Global Components 
+
+// get all the files from the folder
+const requireComponent = require.context(
+	'./globalComponents',
+	false,
+	/[A-Z]\w+\.(vue|js)$/
+)
+
+// create component from each file
+requireComponent.keys().forEach(fileName => {
+	// Get component config
+	const componentConfig = requireComponent(fileName)
+
+	const componentName = fileName
+		.split('/')
+		.pop()
+		.replace(/\.\w+$/, '');
+
+	// Register component globally
+	Vue.component(
+		componentName,
+		componentConfig.default || componentConfig
+	)
+})
+
 // Global Filters
 
 // capitalize a single word
