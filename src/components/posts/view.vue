@@ -1,18 +1,71 @@
 <template>
 	<div v-if="post">
-		<h2>{{ post.title }}</h2>
-		<p>{{ post.description }}</p>
-		<p>{{post.area}} acres</p>
-		<p>${{post.price}}/day</p>
-		<p>{{post.available.from}} - {{ post.available.to}}</p>
-		<p>{{post.huntableAcres}}</p>
-		<p>deer: {{post.category.deer.allowed}}</p>
-		<p v-for="(weapon, index) in post.category.deer.weapon" :key="index">{{ weapon}}</p>
-		<p>upland: {{post.category.upland.allowed}}</p>
-		<p>turkey: {{post.category.turkey.allowed}}</p>
-		<p>varmint: {{post.category.varmint.allowed}}</p>
-		<h5>Interested in this property?</h5>
-		<v-btn>Contact User</v-btn>
+		<v-row>
+			<v-col>
+				<h2>{{ post.title }}</h2>
+				<p>{{post.area}}</p>
+			</v-col>
+		</v-row>
+		<v-row>
+			<v-col>
+				<p>{{ post.description }}</p>
+			</v-col>
+		</v-row>
+		<v-row>
+			<v-col cols="6">
+				<p class="mb-0">
+					<strong>Available Dates:</strong>
+				</p>
+				<p>{{post.available.from | formatDateShort }} - {{ post.available.to | formatDateShort }}</p>
+			</v-col>
+			<v-col cols="6">
+				<p class="mb-0">
+					<strong>Huntable Acres</strong>
+				</p>
+				<p>{{post.huntableAcres}} acres</p>
+			</v-col>
+		</v-row>
+		<v-row>
+			<v-col cols="12">
+				<p class="mb-0">
+					<strong>Hunting Categories:</strong>
+				</p>
+				<span
+					class="mr-6"
+					v-for="(item, index) in Object.keys(post.category)"
+					:key="index"
+				>{{ item | capitalizeSingle }}</span>
+			</v-col>
+
+			<template v-if="Object.keys(post.category).includes('deer')">
+				<v-col>
+					<p class="mb-0">
+						<strong>Allowed Deer Hunting Methods:</strong>
+					</p>
+					<span
+						v-for="(weapon, index) in post.category.deer.methods"
+						:key="index"
+						class="mr-6"
+					>{{ weapon | capitalizeSingle }}</span>
+				</v-col>
+			</template>
+		</v-row>
+		<v-row>
+			<v-col>
+				<p class="mb-0">
+					<strong>Price:</strong>
+				</p>
+				<p>${{post.price}}/day</p>
+			</v-col>
+		</v-row>
+		<v-row>
+			<v-col>
+				<p>
+					<strong>Interested in this property?</strong>
+				</p>
+				<v-btn small>Contact User</v-btn>
+			</v-col>
+		</v-row>
 	</div>
 </template>
 
@@ -26,7 +79,6 @@ export default {
 	methods: {
 		//
 		async fetchPost() {
-			console.log(this.$route.params.id);
 			try {
 				const response = await this.$axios({
 					method: "get",
@@ -40,6 +92,7 @@ export default {
 				});
 
 				this.post = response.data;
+				console.log(Object.keys(this.post.category));
 			} catch (error) {
 				console.log("oh noes!", error.response);
 				this.$router.push("/posts/list");

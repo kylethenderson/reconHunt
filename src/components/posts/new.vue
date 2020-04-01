@@ -198,9 +198,9 @@ export default {
 			if (!hasCategory)
 				this.categoryError = "At least one category required.";
 			let deerMethod = true;
-			if (this.category.includes("deer")) {
-				let deerMethod = !!this.deerWeapon.length;
-				if (!deerMethod)
+			if (this.includesDeer) {
+				let deerMethods = !!this.deerWeapon.length;
+				if (!deerMethods)
 					this.methodError =
 						"At least one method required for deer hunting.";
 			}

@@ -1,51 +1,6 @@
 <template>
 	<div>
-		<v-toolbar flat fixed>
-			<v-row justify="space-between">
-				<v-col cols="8" md="6" lg="4" align-self="center">
-					<v-text-field
-						v-model="search"
-						append-icon="mdi-magnify"
-						label="Search"
-						single-line
-						hide-details="auto"
-						@keydown.enter="searchPosts"
-						@click:append="searchPosts"
-					></v-text-field>
-				</v-col>
-				<v-col cols="2">
-					<v-menu offset-y>
-						<template v-slot:activator="{ on }">
-							<v-btn icon v-on="on">
-								<v-icon class="filter">mdi-filter-menu-outline</v-icon>
-							</v-btn>
-						</template>
-						<v-list>
-							<v-list-item>
-								<v-list-item-title>filter item</v-list-item-title>
-							</v-list-item>
-							<v-list-item>
-								<v-list-item-title>filter item</v-list-item-title>
-							</v-list-item>
-							<v-list-item>
-								<v-list-item-title>filter item</v-list-item-title>
-							</v-list-item>
-							<v-list-item>
-								<v-list-item-title>filter item</v-list-item-title>
-							</v-list-item>
-							<v-list-item>
-								<v-list-item-title>clear filters</v-list-item-title>
-							</v-list-item>
-						</v-list>
-					</v-menu>
-				</v-col>
-				<v-col cols="2">
-					<v-btn icon @click="newPost">
-						<v-icon class="plus">mdi-plus-circle-outline</v-icon>
-					</v-btn>
-				</v-col>
-			</v-row>
-		</v-toolbar>
+		<ListToolbar @setFilters="setFilters" @clearFilters="closeFilterMenu" @searchPosts="searchPosts" />
 		<v-row justify="space-between">
 			<v-col cols="6">
 				<h3>{{ posts.length }} Listings</h3>
@@ -56,7 +11,7 @@
 				<v-icon>mdi-chevron-right</v-icon>
 			</v-col>
 		</v-row>
-		<template v-if="posts.length > 0">
+		<div v-if="!!posts.length">
 			<div v-for="(post, index) in posts" :key="index" color="transparent" class="post-card my-3 px-0">
 				<v-row class="mx-1" justify="space-between">
 					<v-col>
@@ -87,12 +42,15 @@
 				</v-card-actions>
 				<v-divider style="margin: 10px 0px 15px 0px !important;"></v-divider>
 			</div>
-		</template>
+		</div>
 	</div>
 </template>
 
 <script>
+import ListToolbar from "./listToolbar";
+
 export default {
+	components: { ListToolbar },
 	data: () => ({
 		search: "",
 		posts: [],
@@ -101,25 +59,58 @@ export default {
 	}),
 	methods: {
 		//
-		async fetchPostings() {
+		async fetchPostings(params = {}) {
+			// set default fetch params
+			let fetchObject = {
+				skip: 0,
+				order: "descending",
+				itemsPerPage: "25",
+				search: "",
+				filterDistance: 0,
+				filterArea: null,
+				filterCategory: []
+			};
+
+			// set params from argument
+			if (params.skip) fetchObject.skip = params.skip;
+			if (params.order) fetchObject.order = params.order;
+			if (params.itemsPerPage)
+				fetchObject.itemsPerPage = params.itemsPerPage;
+			if (params.filterDistance)
+				fetchObject.filterDistance = params.filterDistance;
+			if (params.filterArea) fetchObject.filterArea = params.filterArea;
+			if (params.filterCategory)
+				fetchObject.filterCategory = params.filterCategory;
+			if (params.search) fetchObject.search = params.search;
+
 			const posts = await this.$axios({
 				method: "get",
 				url: `${this.apiPath}/api/post/list`,
+				params: fetchObject,
 				headers: {
 					authorization: `Bearer ${this.$store.state.auth.token}`
 				}
 			});
 			this.posts = posts.data;
-			console.log(this.posts);
 		},
 		async searchPosts() {},
 		async viewPost(post) {
-			console.log(post);
 			// route to single post page
 			this.$router.push(`/posts/view/${post.uuid}`);
 		},
-		async newPost() {
-			this.$router.push("/posts/new");
+		closeFilterMenu() {
+			this.filterMenu = false;
+		},
+
+		setFilters(value) {
+			const filters = {
+				distance: value.filterDistance,
+				categories: value.filterCategory,
+				area: value.filterArea
+			};
+			console.log(filters);
+			this.fetchPostings(filters);
+			this.filterMenu = false;
 		}
 	},
 	computed: {

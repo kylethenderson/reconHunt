@@ -48,6 +48,15 @@ Vue.filter('capitalizeSingle', function (value) {
 	return value.charAt(0).toUpperCase() + value.slice(1)
 })
 
+Vue.filter('formatDateShort', function (value) {
+	if (!value) return '';
+
+	const dateVals = value.split(' ');
+	const month = dateVals[1];
+	const date = dateVals[2];
+	return `${month} ${date}`;
+})
+
 new Vue({
 	vuetify,
 	router,
