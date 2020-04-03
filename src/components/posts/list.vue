@@ -7,7 +7,9 @@
 			</v-col>
 			<v-col cols="6" class="text-right">
 				<v-icon @click="pageBack">mdi-chevron-left</v-icon>
-				<span style="position: relative; top: 2px; font-size: 16px; margin: 10px 0px;">1-25 of 256</span>
+				<span
+					style="position: relative; top: 2px; font-size: 16px; margin: 10px 0px;"
+				>1-{{ posts.length }} of {{ posts.length }}</span>
 				<v-icon @click="pageForward">mdi-chevron-right</v-icon>
 			</v-col>
 		</v-row>

@@ -9,6 +9,11 @@
 			<v-container>
 				<v-row justify="center">
 					<v-col cols="10">
+						<p>Fill out the form below and we'll email the property owner your details.</p>
+					</v-col>
+				</v-row>
+				<v-row justify="center">
+					<v-col cols="10">
 						<v-text-field label="Contact Name" v-model="name"></v-text-field>
 					</v-col>
 					<v-col cols="10">
