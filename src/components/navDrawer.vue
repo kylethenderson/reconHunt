@@ -46,12 +46,12 @@ export default {
 		drawer: false,
 		drawerItems: [
 			{
-				text: "Current Posts",
+				text: "Current Listings",
 				icon: "mdi-format-list-bulleted",
 				to: "/posts/list"
 			},
 			{
-				text: "New Post",
+				text: "New Listing",
 				icon: "mdi-plus",
 				to: "/posts/new"
 			},

@@ -27,6 +27,8 @@
 					</template>
 					<v-toolbar color="primary" dark>
 						<v-toolbar-title>Filter Listings</v-toolbar-title>
+						<v-spacer></v-spacer>
+						<v-icon @click="filterMenu = false">mdi-close</v-icon>
 					</v-toolbar>
 					<v-card class="pa-2">
 						<v-row>
@@ -61,12 +63,10 @@
 								<v-select label="Area" :items="areaItems"></v-select>
 							</v-col>
 						</v-row>
-						<v-row>
-							<v-col cols="6" class="text-center">
-								<v-btn small @click="clearFilters">Clear Filters</v-btn>
-							</v-col>
-							<v-col cols="6" class="text-center">
-								<v-btn small @click="setFilters">Filter Listings</v-btn>
+						<v-row justify="end">
+							<v-col class="text-right">
+								<v-btn small class="mr-4" @click="clearFilters">Clear</v-btn>
+								<v-btn small @click="setFilters">Apply</v-btn>
 							</v-col>
 						</v-row>
 					</v-card>

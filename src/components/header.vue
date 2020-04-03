@@ -1,7 +1,9 @@
 <template>
 	<div>
 		<v-app-bar app color="primary" dark>
-			<v-toolbar-title @click="goHome" class="nav-title">Recon Hunt</v-toolbar-title>
+			<v-toolbar-title @click="goHome" class="nav-title">
+				<span v-if="atHome">Recon Hunt</span>
+			</v-toolbar-title>
 			<v-spacer></v-spacer>
 			<v-toolbar-items>
 				<template v-if="loggedIn">
@@ -86,6 +88,9 @@ export default {
 		//
 		loggedIn() {
 			return !!this.$store.state.auth.token;
+		},
+		atHome() {
+			return this.$route.name !== "home";
 		}
 	},
 	created() {

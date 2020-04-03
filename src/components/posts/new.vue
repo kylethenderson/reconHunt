@@ -13,7 +13,7 @@
 				<v-dialog ref="dialog" v-model="modal" :return-value.sync="dates" persistent width="290px">
 					<template v-slot:activator="{ on }">
 						<v-text-field
-							v-model="dateText"
+							:value="dateText"
 							label="Select availabile dates"
 							append-outer-icon="mdi-calendar"
 							readonly
@@ -133,7 +133,11 @@
 				</v-col>
 			</v-row>
 		</v-container>
-		<SuccessDialog :isOpen="dialogs.success" @closeDialog="closeDialog('success')" />
+		<SuccessDialog
+			:isOpen="dialogs.success"
+			@closeDialog="closeDialog('success')"
+			:text="messages.success"
+		/>
 	</div>
 </template>
 
@@ -184,6 +188,8 @@ export default {
 		closeDialog(dialog) {
 			this.dialogs[dialog] = false;
 			this.messages[dialog] = "";
+			this.$refs.postForm.reset();
+			this.$router.push("/posts/list");
 		},
 		async createPost() {
 			this.posting = true;
@@ -253,6 +259,7 @@ export default {
 			}
 		},
 		dateText() {
+			if (!this.dates) return;
 			const formattedDates = this.dates.map(date => {
 				const words = date.split("-");
 				return `${words[1]}-${words[2]}-${words[0]}`;

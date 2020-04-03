@@ -55,9 +55,9 @@
 					<v-text-field
 						aria-autocomplete="off"
 						:rules="[rules.required, rules.password]"
-						:append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-						@click:append="show = !show"
-						:type="show ? 'text' : 'password'"
+						:append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
+						@click:append="showPass = !showPass"
+						:type="showPass ? 'text' : 'password'"
 						hide-details="auto"
 						label="Password"
 						v-model="password"
@@ -67,14 +67,25 @@
 				<v-col cols="10" md="5">
 					<v-text-field
 						aria-autocomplete="off"
-						:append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-						@click:append="show = !show"
-						:type="show ? 'text' : 'password'"
+						:append-icon="showConfirm ? 'mdi-eye' : 'mdi-eye-off'"
+						@click:append="showConfirm = !showConfirm"
+						:type="showConfirm ? 'text' : 'password'"
 						hide-details="auto"
 						label="Confirm Password"
 						v-model="confirmPassword"
 						:error-messages="passwordMatch"
 					></v-text-field>
+				</v-col>
+			</v-row>
+			<v-row justify="center">
+				<v-col cols="1" class="mr-2">
+					<v-checkbox hide-details v-model="disclaimer" :rules="[rules.required]"></v-checkbox>
+				</v-col>
+				<v-col cols="9" align-self="center">
+					<span>
+						I agree to
+						<span @click="openDialog('disclaimer')" class="disclaimer">Terms and Conditions</span>
+					</span>
 				</v-col>
 			</v-row>
 			<v-row>
@@ -89,13 +100,18 @@
 				<v-btn @click="$emit('toggleView')" text small>Log In</v-btn>
 			</v-col>
 		</v-row>
+		<DisclaimerDialog :isOpen="dialogs.disclaimer" @closeDialog="closeDialog('disclaimer')" />
 	</div>
 </template>
 
 <script>
 import crypto from "crypto";
+import DisclaimerDialog from "../../globalComponents/DisclaimerDialog";
 
 export default {
+	components: {
+		DisclaimerDialog
+	},
 	data: () => ({
 		apiPath: process.env.VUE_APP_BASE_PATH,
 		//
@@ -105,14 +121,17 @@ export default {
 		phone: "",
 		username: "",
 		password: "",
+		disclaimer: false,
 		//
 		confirmPassword: "",
-		show: false,
+		showPass: false,
+		showConfirm: false,
 		valid: true,
 		loading: false,
 		dialogs: {
 			success: false,
-			error: false
+			error: false,
+			disclaimer: false
 		},
 		loginUsername: "",
 		loginPassword: "",
@@ -139,8 +158,13 @@ export default {
 	}),
 	methods: {
 		//
+		openDialog(dialog) {
+			this.dialogs[dialog] = true;
+		},
+		closeDialog(dialog) {
+			this.dialogs[dialog] = false;
+		},
 		async register() {
-			this.$refs.registerForm.resetValidation();
 			this.loading = true;
 
 			// trim and format data for server
@@ -165,7 +189,10 @@ export default {
 			};
 
 			// validate the data before we send it
-			if (!this.$refs.registerForm.validate()) return;
+			if (!this.$refs.registerForm.validate()) {
+				this.loading = false;
+				return;
+			}
 
 			// register user
 			try {
@@ -241,4 +268,8 @@ export default {
 </script>
 
 <style lang='scss' scoped>
+.disclaimer {
+	display: inline;
+	border-bottom: 1px solid #435e40;
+}
 </style>

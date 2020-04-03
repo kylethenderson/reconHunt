@@ -49,7 +49,7 @@ export default {
 	},
 	watch: {
 		isOpen: {
-			immediate: true,
+			immediate: false,
 			handler(value) {
 				this.dialog = value;
 			}

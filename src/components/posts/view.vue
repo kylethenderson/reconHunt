@@ -1,7 +1,8 @@
 <template>
 	<div v-if="post">
+		<v-icon @click="$router.push('/posts/list')">mdi-arrow-left</v-icon>
 		<v-row>
-			<v-col>
+			<v-col cols="9">
 				<h2>{{ post.title }}</h2>
 				<p>{{post.area}}</p>
 			</v-col>
@@ -59,20 +60,33 @@
 			</v-col>
 		</v-row>
 		<v-row>
-			<v-col>
+			<v-col class="text-right mr-4">
 				<p>
 					<strong>Interested in this property?</strong>
 				</p>
-				<v-btn small>Contact User</v-btn>
+				<v-btn color="primary" @click="dialogs.contact = !dialogs.contact">Contact User</v-btn>
 			</v-col>
 		</v-row>
+
+		<!-- contact dialog -->
+		<ContactDialog :isOpen="dialogs.contact" @closeDialog="closeDialog('contact')" />
 	</div>
 </template>
 
 <script>
+import ContactDialog from "./contactDialog";
+
 export default {
+	components: {
+		ContactDialog
+	},
 	data: () => ({
 		post: null,
+		dialogs: {
+			contact: false,
+			success: false,
+			error: false
+		},
 		//
 		apiPath: process.env.VUE_APP_BASE_PATH
 	}),
@@ -92,11 +106,13 @@ export default {
 				});
 
 				this.post = response.data;
-				console.log(Object.keys(this.post.category));
 			} catch (error) {
 				console.log("oh noes!", error.response);
 				this.$router.push("/posts/list");
 			}
+		},
+		closeDialog(dialog) {
+			this.dialogs[dialog] = false;
 		}
 	},
 	computed: {

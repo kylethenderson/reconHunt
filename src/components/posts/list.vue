@@ -1,18 +1,24 @@
 <template>
 	<div>
 		<ListToolbar @setFilters="setFilters" @clearFilters="closeFilterMenu" @searchPosts="searchPosts" />
-		<v-row justify="space-between">
+		<v-row justify="space-between" v-if="!!posts.length">
 			<v-col cols="6">
 				<h3>{{ posts.length }} Listings</h3>
 			</v-col>
 			<v-col cols="6" class="text-right">
-				<v-icon>mdi-chevron-left</v-icon>
+				<v-icon @click="pageBack">mdi-chevron-left</v-icon>
 				<span style="position: relative; top: 2px; font-size: 16px; margin: 10px 0px;">1-25 of 256</span>
-				<v-icon>mdi-chevron-right</v-icon>
+				<v-icon @click="pageForward">mdi-chevron-right</v-icon>
 			</v-col>
 		</v-row>
 		<div v-if="!!posts.length">
-			<div v-for="(post, index) in posts" :key="index" color="transparent" class="post-card my-3 px-0">
+			<div
+				v-for="(post, index) in posts"
+				:key="index"
+				color="transparent"
+				class="post-card my-3 px-0"
+				@click="viewPost(post)"
+			>
 				<v-row class="mx-1" justify="space-between">
 					<v-col>
 						<h3>{{ post.title | truncateTitle }}</h3>
@@ -38,7 +44,7 @@
 				</v-card-text>
 				<v-card-actions>
 					<v-spacer></v-spacer>
-					<v-btn @click="viewPost(post)" text>More details ...</v-btn>
+					<v-btn @click.stop="viewPost(post)" text>More details ...</v-btn>
 				</v-card-actions>
 				<v-divider style="margin: 10px 0px 15px 0px !important;"></v-divider>
 			</div>
@@ -111,6 +117,12 @@ export default {
 			console.log(filters);
 			this.fetchPostings(filters);
 			this.filterMenu = false;
+		},
+		pageForward() {
+			console.log("forward");
+		},
+		pageBack() {
+			console.log("back");
 		}
 	},
 	computed: {
