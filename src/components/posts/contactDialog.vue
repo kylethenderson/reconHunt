@@ -18,7 +18,7 @@
 						<v-textarea label="Message" v-model="message"></v-textarea>
 					</v-col>
 					<v-col cols="10" class="text-right">
-						<v-btn color="primary" @click="submit">Submit</v-btn>
+						<v-btn color="primary" @click="submit" :disabled="submitting" :loading="submitting">Submit</v-btn>
 					</v-col>
 				</v-row>
 			</v-container>
@@ -38,7 +38,9 @@ export default {
 		dialog: false,
 		name: "",
 		email: "",
-		message: ""
+		message: "",
+		//
+		submitting: false
 	}),
 	methods: {
 		//
@@ -47,13 +49,23 @@ export default {
 			this.$emit("closeDialog");
 		},
 		submit() {
+			this.submitting = true;
+
 			const submitObject = {
 				postId: this.$route.params.id,
 				name: this.name,
 				email: this.email,
 				message: this.message
 			};
-			console.log(submitObject);
+
+			try {
+				console.log(submitObject);
+				this.$emit("closeDialog");
+			} catch (error) {
+				console.log("Error submitting interest", error);
+			} finally {
+				this.submitting = false;
+			}
 		}
 	},
 	computed: {
