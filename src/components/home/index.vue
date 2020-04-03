@@ -2,7 +2,7 @@
 	<div>
 		<v-row justify="center">
 			<v-col cols="10">
-				<v-img class="mt-6" src="../../assets/logo.png"></v-img>
+				<v-img class="mt-12" src="../../assets/logo.png"></v-img>
 			</v-col>
 		</v-row>
 		<v-row>

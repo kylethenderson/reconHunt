@@ -1,9 +1,7 @@
 <template>
 	<div>
-		<v-app-bar app color="primary" dark>
-			<v-toolbar-title @click="goHome" class="nav-title">
-				<span v-if="atHome">Recon Hunt</span>
-			</v-toolbar-title>
+		<v-app-bar v-if="atHome" app color="primary" dark>
+			<v-toolbar-title @click="goHome" class="nav-title">Recon Hunt</v-toolbar-title>
 			<v-spacer></v-spacer>
 			<v-toolbar-items>
 				<template v-if="loggedIn">
