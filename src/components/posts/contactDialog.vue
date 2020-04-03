@@ -18,7 +18,7 @@
 						<v-textarea label="Message" v-model="message"></v-textarea>
 					</v-col>
 					<v-col cols="10" class="text-right">
-						<v-btn color="primary">Submit</v-btn>
+						<v-btn color="primary" @click="submit">Submit</v-btn>
 					</v-col>
 				</v-row>
 			</v-container>
@@ -45,6 +45,15 @@ export default {
 		closeDialog() {
 			// clear data
 			this.$emit("closeDialog");
+		},
+		submit() {
+			const submitObject = {
+				postId: this.$route.params.id,
+				name: this.name,
+				email: this.email,
+				message: this.message
+			};
+			console.log(submitObject);
 		}
 	},
 	computed: {
