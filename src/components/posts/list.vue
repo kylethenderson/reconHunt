@@ -2,8 +2,10 @@
 	<div>
 		<ListToolbar
 			@applyFilters="applyFilters"
-			@clearFilters="closeFilterMenu"
 			@searchPosts="searchPosts"
+			:menu="filterMenu"
+			@openFilter="filterMenu = true"
+			@closeMenu="filterMenu = false"
 		/>
 		<v-row justify="space-between" v-if="!!posts.length">
 			<v-col cols="6">
@@ -11,9 +13,7 @@
 			</v-col>
 			<v-col cols="6" class="text-right">
 				<v-icon @click="pageBack">mdi-chevron-left</v-icon>
-				<span
-					style="position: relative; top: 2px; font-size: 16px; margin: 10px 0px;"
-				>1-{{ posts.length }} of {{ posts.length }}</span>
+				<span style="font-size: 16px; margin: 10px 0px;">1-{{ posts.length }} of {{ posts.length }}</span>
 				<v-icon @click="pageForward">mdi-chevron-right</v-icon>
 			</v-col>
 		</v-row>
@@ -66,12 +66,17 @@ export default {
 	data: () => ({
 		search: "",
 		posts: [],
+		filterMenu: false,
+		//
+		filterCategories: [],
+		filterArea: null,
+		searchString: null,
 		//
 		apiPath: process.env.VUE_APP_BASE_PATH || "http://localhost:3000"
 	}),
 	methods: {
 		//
-		async fetchPostings(params = {}) {
+		async fetchPostings() {
 			// set default fetch params
 			let fetchObject = {
 				skip: 0,
@@ -82,15 +87,14 @@ export default {
 				filterCategory: []
 			};
 
-			// set params from argument
-			if (params.skip) fetchObject.skip = params.skip;
-			if (params.order) fetchObject.order = params.order;
-			if (params.itemsPerPage)
-				fetchObject.itemsPerPage = params.itemsPerPage;
-			if (params.filterArea) fetchObject.filterArea = params.filterArea;
-			if (params.filterCategory)
-				fetchObject.filterCategory = params.filterCategory;
-			if (params.search) fetchObject.search = params.search;
+			// set params from api call
+			if (this.skip) fetchObject.skip = this.skip;
+			if (this.order) fetchObject.order = this.order;
+			if (this.itemsPerPage) fetchObject.itemsPerPage = this.itemsPerPage;
+			if (this.filterArea) fetchObject.filterArea = this.filterArea;
+			if (this.filterCategory)
+				fetchObject.filterCategory = this.filterCategories;
+			if (this.searchString) fetchObject.search = this.searchString;
 
 			const posts = await this.$axios({
 				method: "get",
@@ -102,24 +106,28 @@ export default {
 			});
 			this.posts = posts.data;
 		},
-		async searchPosts() {},
+		async searchPosts(value) {
+			this.searchString = value.search;
+			this.skip = 0;
+			this.fetchPostings();
+			this.filterMenu = false;
+		},
 		async viewPost(post) {
 			// route to single post page
 			this.$router.push(`/posts/view/${post.uuid}`);
 		},
-		closeFilterMenu() {
-			this.filterMenu = false;
-		},
 
 		applyFilters(value) {
+			console.log(value);
 			const filters = {
-				distance: value.filterDistance,
 				categories: value.filterCategory,
 				area: value.filterArea
 			};
-			console.log(filters);
-			this.fetchPostings(filters);
+			this.filterCatefories = value.filterCategory;
+			this.filterArea = value.filterArea;
+			this.skip = 0;
 			this.filterMenu = false;
+			this.fetchPostings();
 		},
 		pageForward() {
 			console.log("forward");
