@@ -48,7 +48,7 @@ export default {
 		}
 	},
 	beforeDestroy() {
-		clearInterval(this.interval);
+		clearInterval(this.refreshInterval);
 	}
 };
 </script>

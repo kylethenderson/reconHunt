@@ -1,5 +1,7 @@
 <template>
-	<div>user settings</div>
+	<div>
+		<h2>user settings page</h2>
+	</div>
 </template>
 
 <script>

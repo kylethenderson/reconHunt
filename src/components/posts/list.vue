@@ -1,6 +1,10 @@
 <template>
 	<div>
-		<ListToolbar @setFilters="setFilters" @clearFilters="closeFilterMenu" @searchPosts="searchPosts" />
+		<ListToolbar
+			@applyFilters="applyFilters"
+			@clearFilters="closeFilterMenu"
+			@searchPosts="searchPosts"
+		/>
 		<v-row justify="space-between" v-if="!!posts.length">
 			<v-col cols="6">
 				<h3>{{ posts.length }} Listings</h3>
@@ -74,7 +78,6 @@ export default {
 				order: "descending",
 				itemsPerPage: "25",
 				search: "",
-				filterDistance: 0,
 				filterArea: null,
 				filterCategory: []
 			};
@@ -84,8 +87,6 @@ export default {
 			if (params.order) fetchObject.order = params.order;
 			if (params.itemsPerPage)
 				fetchObject.itemsPerPage = params.itemsPerPage;
-			if (params.filterDistance)
-				fetchObject.filterDistance = params.filterDistance;
 			if (params.filterArea) fetchObject.filterArea = params.filterArea;
 			if (params.filterCategory)
 				fetchObject.filterCategory = params.filterCategory;
@@ -110,7 +111,7 @@ export default {
 			this.filterMenu = false;
 		},
 
-		setFilters(value) {
+		applyFilters(value) {
 			const filters = {
 				distance: value.filterDistance,
 				categories: value.filterCategory,

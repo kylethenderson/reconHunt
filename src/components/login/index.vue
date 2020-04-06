@@ -3,6 +3,11 @@
 		<v-row justify="center" class="fill-height" align="center">
 			<v-col cols="10" sm="8" md="6" lg="4">
 				<v-card class="pt-3">
+					<v-row justify="center">
+						<v-col cols="9">
+							<v-img src="../../assets/logo.png"></v-img>
+						</v-col>
+					</v-row>
 					<v-row>
 						<v-col class="text-center">
 							<h1 color="primary">{{ login ? 'Login' : 'Register' }}</h1>

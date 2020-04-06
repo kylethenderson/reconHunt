@@ -31,7 +31,7 @@
 						<v-icon @click="filterMenu = false">mdi-close</v-icon>
 					</v-toolbar>
 					<v-card class="pa-2">
-						<v-row>
+						<!-- <v-row>
 							<v-col>
 								<p class="pl-0 subtitle-1">Radius (mi)</p>
 								<v-slider v-model="filterDistance" class="align-center" max="500" min="0" hide-details>
@@ -41,7 +41,7 @@
 								</v-slider>
 							</v-col>
 						</v-row>
-						<v-divider class="mb-4"></v-divider>
+						<v-divider class="mb-4"></v-divider>-->
 						<v-row class="px-4">
 							<v-col cols="12" class="pa-0">
 								<p class="mb-0">Select Category</p>
@@ -66,7 +66,7 @@
 						<v-row justify="end">
 							<v-col class="text-right">
 								<v-btn small class="mr-4" @click="clearFilters">Clear</v-btn>
-								<v-btn small @click="setFilters">Apply</v-btn>
+								<v-btn small @click="applyFilters">Apply</v-btn>
 							</v-col>
 						</v-row>
 					</v-card>
@@ -117,14 +117,14 @@ export default {
 			this.$router.push("/posts/new");
 		},
 		//
-		setFilters() {
+		applyFilters() {
 			const filters = {
 				filterDistance: this.filterDistance,
 				filterCategories: this.filterCategory,
 				filterArea: this.filterArea
 			};
 			console.log(filters);
-			this.$emit("setFilters", filters);
+			this.$emit("applyFilters", filters);
 		},
 		async searchPosts() {
 			console.log(this.search);

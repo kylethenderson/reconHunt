@@ -105,6 +105,14 @@
 					value="varmint"
 					:error-messages="categoryError"
 				></v-checkbox>
+				<v-checkbox
+					color="primary"
+					hide-details="auto"
+					v-model="category"
+					label="Water Fowl"
+					value="waterFowl"
+					:error-messages="categoryError"
+				></v-checkbox>
 				<v-row>
 					<v-col cols="6">
 						<v-text-field
