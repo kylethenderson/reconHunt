@@ -20,6 +20,11 @@ const store = new Vuex.Store({
 		},
 		user: {
 			//
+		},
+		search: '',
+		filters: {
+			filterArea: '',
+			filterCategories: []
 		}
 	},
 	mutations: {
@@ -71,6 +76,15 @@ const store = new Vuex.Store({
 			// and also in localStorage
 			localStorage.rHToken = payload.token;
 			localStorage.rHRefreshToken = payload.refreshToken;
+		},
+		storeSearch(state, payload) {
+			state.search = payload;
+		},
+		storeFilters(state, payload) {
+			if (payload.filterCategories) state.filters.filterCategories = payload.filterCategories;
+			else state.filterCategories = [];
+			if (payload.filterArea) state.filters.filterArea = payload.filterArea;
+			else state.filters.filterArea = '';
 		}
 	}
 });

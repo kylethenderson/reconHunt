@@ -22,12 +22,12 @@ export default {
 	}),
 	methods: {
 		//
-		async refreshTokens() {
+		async refreshTokens(token) {
 			const tokens = await this.$axios({
 				method: "post",
 				url: `${this.apiPath}/api/user/refreshToken`,
 				data: {
-					token: this.$store.state.auth.refreshToken
+					token: token || this.$store.state.auth.refreshToken
 				}
 			});
 			this.$store.commit("updateTokens", tokens.data);
@@ -40,10 +40,11 @@ export default {
 		this.$store.commit("checkLocalStorage");
 	},
 	created() {
-		// on create, refresh tokens if we need to
+		// on create, refresh tokens if we need to and start the refresh interval
 		if (localStorage.rHToken) {
 			const decoded = jwt.decode(localStorage.rHToken);
-			if (decoded.exp < Date.now()) this.refreshTokens();
+			if (decoded.exp < Date.now())
+				this.refreshTokens(localStorage.rHRefreshToken);
 			this.startRefreshInterval();
 		}
 	},

@@ -14,7 +14,10 @@
 			</v-col>
 			<v-col cols="2">
 				<v-btn icon @click="$emit('openFilter')" id="filterButton">
-					<v-icon class="filter">mdi-filter-menu-outline</v-icon>
+					<v-icon
+						class="filter"
+						:color="(search || filterArea || filterCategory.length) ? 'secondary' : 'primary'"
+					>{{ (search || filterArea || filterCategory.length) ? 'mdi-filter-menu' : 'mdi-filter-menu-outline'}}</v-icon>
 				</v-btn>
 				<v-menu
 					attach="#filterButton"
@@ -22,7 +25,7 @@
 					two-line
 					v-model="filterMenu"
 					nudge-width="250"
-					:close-on-content-click="false"	
+					:close-on-content-click="false"
 				>
 					<v-toolbar color="primary" dark>
 						<v-toolbar-title>Filter Listings</v-toolbar-title>
@@ -59,7 +62,7 @@
 						<v-divider class="mt-4"></v-divider>
 						<v-row>
 							<v-col cols="9">
-								<v-select label="Area" :items="areaItems"></v-select>
+								<v-select label="Area" :items="areaItems" v-model="filterArea"></v-select>
 							</v-col>
 						</v-row>
 						<v-row justify="end">
@@ -110,8 +113,12 @@ export default {
 	methods: {
 		clearFilters() {
 			this.filterCategory = [];
-			this.filterArea = null;
-			this.$emit("closeMenu");
+			this.filterArea = "";
+			const filters = {
+				filterCategories: [],
+				filterArea: ""
+			};
+			this.$emit("applyFilters", filters);
 		},
 		newPost() {
 			this.$router.push("/posts/new");
@@ -126,6 +133,7 @@ export default {
 		},
 		async searchPosts() {
 			console.log(this.search);
+			if (!this.search) return;
 			this.$emit("searchPosts", this.search);
 		}
 	},
@@ -139,6 +147,12 @@ export default {
 				this.filterMenu = value;
 			}
 		}
+	},
+	mounted() {
+		console.log(this.$store.state.filters.filterCategories);
+		this.search = this.$store.state.search;
+		this.filterCategory = this.$store.state.filters.filterCategories;
+		this.filterArea = this.$store.state.filters.filterArea;
 	},
 	created() {
 		//

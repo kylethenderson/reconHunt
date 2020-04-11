@@ -31,19 +31,31 @@
 		</v-list>
 		<template v-slot:append>
 			<div class="pa-2">
+				<v-btn text block @click="dialogs.contact = true;">Contact Us</v-btn>
+			</div>
+			<div class="pa-2">
 				<v-btn text block @click="logout">Logout</v-btn>
 			</div>
 		</template>
+		<ContactDialog :isOpen="dialogs.contact" @closeDialog="closeDialog('contact')" />
 	</v-navigation-drawer>
 </template>
 
 <script>
+import ContactDialog from "./contactDialog";
+
 export default {
+	components: {
+		ContactDialog
+	},
 	props: {
 		isOpen: Boolean
 	},
 	data: () => ({
 		drawer: false,
+		dialogs: {
+			contact: false
+		},
 		drawerItems: [
 			{
 				text: "Current Listings",
@@ -68,6 +80,9 @@ export default {
 		logout() {
 			this.$store.commit("logout");
 			this.$router.push("/login");
+		},
+		closeDialog(dialog) {
+			this.dialogs[dialog] = false;
 		}
 	},
 	computed: {

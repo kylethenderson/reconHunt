@@ -77,10 +77,11 @@ export default {
 	methods: {
 		//
 		async fetchPostings() {
+			const { filters, search } = this.$store.state;
 			// set default fetch params
 			let fetchObject = {
 				skip: 0,
-				order: "descending",
+				sort: "descending",
 				itemsPerPage: "25",
 				search: "",
 				filterArea: null,
@@ -89,12 +90,12 @@ export default {
 
 			// set params from api call
 			if (this.skip) fetchObject.skip = this.skip;
-			if (this.order) fetchObject.order = this.order;
+			if (this.sort) fetchObject.sort = this.sort;
 			if (this.itemsPerPage) fetchObject.itemsPerPage = this.itemsPerPage;
-			if (this.filterArea) fetchObject.filterArea = this.filterArea;
-			if (this.filterCategory)
-				fetchObject.filterCategory = this.filterCategories;
-			if (this.searchString) fetchObject.search = this.searchString;
+			if (filters.filterArea) fetchObject.filterArea = filters.filterArea;
+			if (filters.filterCategories)
+				fetchObject.filterCategory = filters.filterCategories;
+			if (search) fetchObject.search = search;
 
 			const posts = await this.$axios({
 				method: "get",
@@ -107,10 +108,9 @@ export default {
 			this.posts = posts.data;
 		},
 		async searchPosts(value) {
-			this.searchString = value.search;
+			this.$store.commit("storeSearch", value);
 			this.skip = 0;
 			this.fetchPostings();
-			this.filterMenu = false;
 		},
 		async viewPost(post) {
 			// route to single post page
@@ -119,12 +119,7 @@ export default {
 
 		applyFilters(value) {
 			console.log(value);
-			const filters = {
-				categories: value.filterCategory,
-				area: value.filterArea
-			};
-			this.filterCatefories = value.filterCategory;
-			this.filterArea = value.filterArea;
+			this.$store.commit("storeFilters", value);
 			this.skip = 0;
 			this.filterMenu = false;
 			this.fetchPostings();
