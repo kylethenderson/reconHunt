@@ -22,31 +22,46 @@ export default {
 	}),
 	methods: {
 		//
+		checkForTokens() {
+			// check to see if we have a token in storage.
+			// if yes and its expired, refresh them.
+			// otherwise, we've got tokens and they're good, so just set the refresh interval
+			if (localStorage.rHToken) {
+				const decoded = jwt.decode(localStorage.rHToken);
+				if (decoded.exp < Date.now())
+					this.refreshTokens(localStorage.rHRefreshToken);
+				this.startRefreshInterval();
+			} else this.$router.push("/login");
+		},
 		async refreshTokens(token) {
-			const tokens = await this.$axios({
-				method: "post",
-				url: `${this.apiPath}/api/user/refreshToken`,
-				data: {
-					token: token || this.$store.state.auth.refreshToken
-				}
-			});
-			this.$store.commit("updateTokens", tokens.data);
+			try {
+				// try to refresh tokens
+				const tokens = await this.$axios({
+					method: "post",
+					url: `${this.apiPath}/api/user/refreshToken`,
+					data: {
+						token: token || this.$store.state.auth.refreshToken
+					}
+				});
+				this.$store.commit("updateTokens", tokens.data);
+			} catch (error) {
+				// if we get a JWTEXPIRE error back, logout and route to login page.
+				if (error.response && error.response.code === "JWTEXPIRE");
+				this.$store.commit("logout");
+				this.$router.push("/login");
+			} finally {
+				//
+			}
 		},
 		startRefreshInterval() {
 			this.refreshInterval = setInterval(this.refreshTokens, 60000 * 14);
 		}
 	},
 	mounted() {
-		this.$store.commit("checkLocalStorage");
+		// this.$store.commit("checkLocalStorage");
 	},
 	created() {
-		// on create, refresh tokens if we need to and start the refresh interval
-		if (localStorage.rHToken) {
-			const decoded = jwt.decode(localStorage.rHToken);
-			if (decoded.exp < Date.now())
-				this.refreshTokens(localStorage.rHRefreshToken);
-			this.startRefreshInterval();
-		}
+		this.checkForTokens();
 	},
 	beforeDestroy() {
 		clearInterval(this.refreshInterval);

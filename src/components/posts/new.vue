@@ -242,9 +242,6 @@ export default {
 				await this.$axios({
 					method: "post",
 					url: `${this.apiPath}/api/post/create`,
-					headers: {
-						authorization: `Bearer ${this.$store.state.auth.token}`
-					},
 					data: post
 				});
 				this.dialogs.success = true;

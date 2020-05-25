@@ -100,9 +100,6 @@ export default {
 					params: {
 						id: this.$route.params.id
 					},
-					headers: {
-						authorization: `Bearer ${this.$store.state.auth.token}`
-					}
 				});
 
 				this.post = response.data;

@@ -101,9 +101,6 @@ export default {
 				method: "get",
 				url: `${this.apiPath}/api/post/list`,
 				params: fetchObject,
-				headers: {
-					authorization: `Bearer ${this.$store.state.auth.token}`
-				}
 			});
 			this.posts = posts.data;
 		},

@@ -149,7 +149,6 @@ export default {
 		}
 	},
 	mounted() {
-		console.log(this.$store.state.filters.filterCategories);
 		this.search = this.$store.state.search;
 		this.filterCategory = this.$store.state.filters.filterCategories;
 		this.filterArea = this.$store.state.filters.filterArea;
