@@ -12,9 +12,14 @@
 				<h3>{{ posts.length }} Listings</h3>
 			</v-col>
 			<v-col cols="6" class="text-right">
-				<v-icon @click="pageBack">mdi-chevron-left</v-icon>
+				<!-- <v-icon @click="pageBack">mdi-chevron-left</v-icon>
 				<span style="font-size: 16px; margin: 10px 0px;">1-{{ posts.length }} of {{ posts.length }}</span>
-				<v-icon @click="pageForward">mdi-chevron-right</v-icon>
+				<v-icon @click="pageForward">mdi-chevron-right</v-icon>-->
+			</v-col>
+		</v-row>
+		<v-row v-else>
+			<v-col cols="6">
+				<h3>No listings found for those filters.</h3>
 			</v-col>
 		</v-row>
 		<div v-if="!!posts.length">
@@ -30,7 +35,7 @@
 						<h3>{{ post.title | truncateTitle }}</h3>
 					</v-col>
 					<v-col class="text-right">
-						<h4>{{ post.area}}</h4>
+						<h4>{{ post.city}}, {{ post.state }}</h4>
 					</v-col>
 				</v-row>
 				<v-card-text class="py-0">
@@ -50,7 +55,7 @@
 				</v-card-text>
 				<v-card-actions>
 					<v-spacer></v-spacer>
-					<v-btn @click.stop="viewPost(post)" text>More details ...</v-btn>
+					<v-btn @click.stop="viewPost(post)" text style="z-index: 0 !important;">More details ...</v-btn>
 				</v-card-actions>
 				<v-divider style="margin: 10px 0px 15px 0px !important;"></v-divider>
 			</div>
@@ -69,7 +74,8 @@ export default {
 		filterMenu: false,
 		//
 		filterCategories: [],
-		filterArea: null,
+		filterState: null,
+		filterRegion: null,
 		searchString: null,
 		//
 		apiPath: process.env.VUE_APP_BASE_PATH || "http://localhost:3000"
@@ -78,13 +84,15 @@ export default {
 		//
 		async fetchPostings() {
 			const { filters, search } = this.$store.state;
+			console.log(filters, search);
 			// set default fetch params
 			let fetchObject = {
 				skip: 0,
 				sort: "descending",
 				itemsPerPage: "25",
-				search: "",
-				filterArea: null,
+				search: null,
+				filterState: null,
+				filterRegion: null,
 				filterCategory: []
 			};
 
@@ -92,7 +100,10 @@ export default {
 			if (this.skip) fetchObject.skip = this.skip;
 			if (this.sort) fetchObject.sort = this.sort;
 			if (this.itemsPerPage) fetchObject.itemsPerPage = this.itemsPerPage;
-			if (filters.filterArea) fetchObject.filterArea = filters.filterArea;
+			if (filters.filterState)
+				fetchObject.filterState = filters.filterState;
+			if (filters.filterRegion)
+				fetchObject.filterRegion = filters.filterRegion;
 			if (filters.filterCategories)
 				fetchObject.filterCategory = filters.filterCategories;
 			if (search) fetchObject.search = search;
@@ -100,7 +111,7 @@ export default {
 			const posts = await this.$axios({
 				method: "get",
 				url: `${this.apiPath}/api/post/list`,
-				params: fetchObject,
+				params: fetchObject
 			});
 			this.posts = posts.data;
 		},
@@ -109,17 +120,16 @@ export default {
 			this.skip = 0;
 			this.fetchPostings();
 		},
-		async viewPost(post) {
-			// route to single post page
-			this.$router.push(`/posts/view/${post.uuid}`);
-		},
-
 		applyFilters(value) {
 			console.log(value);
 			this.$store.commit("storeFilters", value);
 			this.skip = 0;
 			this.filterMenu = false;
 			this.fetchPostings();
+		},
+		async viewPost(post) {
+			// route to single post page
+			this.$router.push(`/posts/view/${post.uuid}`);
 		},
 		pageForward() {
 			console.log("forward");

@@ -23,9 +23,11 @@ const store = new Vuex.Store({
 		},
 		search: '',
 		filters: {
-			filterArea: '',
+			filterState: '',
+			filterRegion: '',
 			filterCategories: []
-		}
+		},
+		states: ["AL", "AK", "AK", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
 	},
 	mutations: {
 		checkLocalStorage(state) {
@@ -83,8 +85,10 @@ const store = new Vuex.Store({
 		storeFilters(state, payload) {
 			if (payload.filterCategories) state.filters.filterCategories = payload.filterCategories;
 			else state.filterCategories = [];
-			if (payload.filterArea) state.filters.filterArea = payload.filterArea;
-			else state.filters.filterArea = '';
+			if (payload.filterState) state.filters.filterState = payload.filterState;
+			else state.filters.filterState = '';
+			if (payload.filterRegion) state.filters.filterRegion = payload.filterRegion;
+			else state.filters.filterRegion = '';
 		}
 	}
 });

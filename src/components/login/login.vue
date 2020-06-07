@@ -73,6 +73,7 @@ export default {
 				.digest("hex");
 
 			try {
+				console.log('logging in')
 				const response = await this.$axios.post(
 					`${this.apiPath}/api/user/login`,
 					{

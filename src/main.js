@@ -28,27 +28,26 @@ const refreshTokens = async (token) => {
 			store.commit("logout");
 			router.push("/login");
 		}
-		return new Error('Error refreshing token');	
+		return new Error('Error refreshing token');
 	}
 }
 
 // Add a request interceptor
 axios.interceptors.request.use(async (req) => {
-	console.log('req interceptor')
-
 	// check token before request. if token is expired,
 	// try to refresh before making a request
-	const { exp } = jwt.decode(store.state.auth.token);
-	if ((exp * 1000) <= Date.now()) {
-		const response = await refreshTokens(store.state.auth.token);
-		console.log('refresh interceptor', response);
+	if (store.state.auth.token) {
+		const { exp } = jwt.decode(store.state.auth.token);
+		if ((exp * 1000) <= Date.now()) {
+			const response = await refreshTokens(store.state.auth.token);
+			console.log('refresh interceptor', response);
+		}
+
+		// add auth header to each request
+		const token = store.state.auth.token;
+		if (token) req.headers.authorization = `Bearer ${token}`;
 	}
 
-	// add auth header to each request
-	const token = store.state.auth.token;
-	if (token) req.headers.authorization = `Bearer ${token}`;
-
-	console.log('making request')
 	return req;
 }, (error) => {
 	// Do something with request error
@@ -57,7 +56,6 @@ axios.interceptors.request.use(async (req) => {
 
 // Add a response interceptor
 axios.interceptors.response.use(function (res) {
-	console.log('res interceptor')
 	return res;
 }, function (error) {
 	// Do something with response error

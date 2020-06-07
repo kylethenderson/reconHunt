@@ -2,7 +2,7 @@
 	<v-toolbar flat fixed>
 		<v-row justify="space-between">
 			<v-col cols="8" md="6" lg="4" align-self="center">
-				<v-text-field
+				<!-- <v-text-field
 					v-model="search"
 					append-icon="mdi-magnify"
 					label="Search"
@@ -10,23 +10,24 @@
 					hide-details="auto"
 					@keydown.enter="searchPosts"
 					@click:append="searchPosts"
-				></v-text-field>
+				></v-text-field>-->
 			</v-col>
 			<v-col cols="2">
-				<v-btn icon @click="$emit('openFilter')" id="filterButton">
-					<v-icon
-						class="filter"
-						:color="(search || filterArea || filterCategory.length) ? 'secondary' : 'primary'"
-					>{{ (search || filterArea || filterCategory.length) ? 'mdi-filter-menu' : 'mdi-filter-menu-outline'}}</v-icon>
-				</v-btn>
 				<v-menu
-					attach="#filterButton"
 					nudge-left="150"
 					two-line
 					v-model="filterMenu"
 					nudge-width="250"
 					:close-on-content-click="false"
 				>
+					<template v-slot:activator="{ on }">
+						<v-btn icon @click="$emit('openFilter')" id="filterButton" v-on="on">
+							<v-icon
+								class="filter"
+								:color="(search || filterState || filterRegion || filterCategory.length) ? 'secondary' : 'primary'"
+							>{{ (search || filterState || filterRegion || filterCategory.length) ? 'mdi-filter-menu' : 'mdi-filter-menu-outline'}}</v-icon>
+						</v-btn>
+					</template>
 					<v-toolbar color="primary" dark>
 						<v-toolbar-title>Filter Listings</v-toolbar-title>
 						<v-spacer></v-spacer>
@@ -61,8 +62,11 @@
 						</v-row>
 						<v-divider class="mt-4"></v-divider>
 						<v-row>
-							<v-col cols="9">
-								<v-select label="Area" :items="areaItems" v-model="filterArea"></v-select>
+							<v-col cols="6">
+								<v-select clearable label="State" :items="states" v-model="filterState"></v-select>
+							</v-col>
+							<v-col cols="6">
+								<v-select clearable label="Region" :items="regions" v-model="filterRegion"></v-select>
 							</v-col>
 						</v-row>
 						<v-row justify="end">
@@ -96,27 +100,38 @@ export default {
 			{ text: "Deer", value: "deer" },
 			{ text: "Upland", value: "upland" },
 			{ text: "Turkey", value: "turkey" },
-			{ text: "Varmint", value: "varmint" }
+			{ text: "Varmint", value: "varmint" },
+			{ text: "Water Fowl", value: "waterFowl" },
+			{ text: "Fishing", value: "fish" },
+			{ text: "Guided Hunt", value: "guidedHunt" }
 		],
-		areaItems: [
-			{ text: "Minneapolis", value: "msp" },
-			{
-				text: "Rochester",
-				value: "rochester"
-			},
-			{ text: "St. Cloud", value: "stCloud" }
+		regions: [
+			{ text: "SE - Southeast", value: "se" },
+			{ text: "SW - Southwest", value: "sw" },
+			{ text: "NW - Northwest", value: "nw" },
+			{ text: "NE - Northeast", value: "ne" },
+			{ text: "Cen - Central", value: "cen" }
 		],
 		//
 		filterCategory: [],
-		filterArea: null
+		filterState: null,
+		filterRegion: null
 	}),
+	computed: {
+		//
+		states() {
+			return this.$store.state.states;
+		}
+	},
 	methods: {
 		clearFilters() {
 			this.filterCategory = [];
-			this.filterArea = "";
+			this.filterState = null;
+			this.filterRegion = null;
 			const filters = {
 				filterCategories: [],
-				filterArea: ""
+				filterState: "",
+				filterRegion: ""
 			};
 			this.$emit("applyFilters", filters);
 		},
@@ -127,7 +142,8 @@ export default {
 		applyFilters() {
 			const filters = {
 				filterCategories: this.filterCategory,
-				filterArea: this.filterArea
+				filterState: this.filterState,
+				filterRegion: this.filterRegion
 			};
 			this.$emit("applyFilters", filters);
 		},
@@ -136,9 +152,6 @@ export default {
 			if (!this.search) return;
 			this.$emit("searchPosts", this.search);
 		}
-	},
-	computed: {
-		//
 	},
 	watch: {
 		menu: {
@@ -151,7 +164,8 @@ export default {
 	mounted() {
 		this.search = this.$store.state.search;
 		this.filterCategory = this.$store.state.filters.filterCategories;
-		this.filterArea = this.$store.state.filters.filterArea;
+		this.filterState = this.$store.state.filters.filterState;
+		this.filterRegion = this.$store.state.filters.filterRegion;
 	},
 	created() {
 		//

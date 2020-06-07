@@ -7,7 +7,17 @@
 		</v-row>
 		<v-container>
 			<v-form ref="postForm" v-model="valid">
-				<v-select :rules="[rules.required]" :items="postAreas" label="Property Area" v-model="area"></v-select>
+				<v-row>
+					<v-col cols="5">
+						<v-text-field :rules="[rules.required]" label="City" v-model="city"></v-text-field>
+					</v-col>
+					<v-col cols="3">
+						<v-select :rules="[rules.required]" :items="states" label="State" v-model="state"></v-select>
+					</v-col>
+					<v-col cols="4">
+						<v-select :rules="[rules.required]" :items="regions" label="Region" v-model="region"></v-select>
+					</v-col>
+				</v-row>
 				<v-text-field :rules="[rules.required]" label="Title" v-model="title"></v-text-field>
 				<v-textarea :rules="[rules.required]" label="Property Description" v-model="description"></v-textarea>
 				<v-dialog ref="dialog" v-model="modal" :return-value.sync="dates" persistent width="290px">
@@ -27,7 +37,7 @@
 						<v-btn text color="primary" @click="$refs.dialog.save(dates)">OK</v-btn>
 					</v-date-picker>
 				</v-dialog>
-				<p class="mb-0 mt-3">Select Allowed Hunting Category</p>
+				<p class="mb-0 mt-3">Select Hunting Categories</p>
 				<v-checkbox
 					color="primary"
 					hide-details
@@ -113,6 +123,22 @@
 					value="waterFowl"
 					:error-messages="categoryError"
 				></v-checkbox>
+				<v-checkbox
+					color="primary"
+					hide-details="auto"
+					v-model="category"
+					label="Fishing"
+					value="fish"
+					:error-messages="categoryError"
+				></v-checkbox>
+				<v-checkbox
+					color="primary"
+					hide-details="auto"
+					v-model="category"
+					label="Guided Hunt"
+					value="guidedHunt"
+					:error-messages="categoryError"
+				></v-checkbox>
 				<v-row>
 					<v-col cols="6">
 						<v-text-field
@@ -152,7 +178,9 @@
 <script>
 export default {
 	data: () => ({
-		area: "",
+		city: "",
+		state: "",
+		region: "",
 		title: "",
 		description: "",
 		availableFrom: "",
@@ -169,10 +197,12 @@ export default {
 		categoryError: "",
 		methodError: "",
 		//
-		postAreas: [
-			{ text: "Minneapolis", value: "msp" },
-			{ text: "Rochester", value: "rochester" },
-			{ text: "St. Cloud", value: "stcloud" }
+		regions: [
+			{ text: "SE - Southeast", value: "se" },
+			{ text: "SW - Southwest", value: "sw" },
+			{ text: "NW - Northwest", value: "nw" },
+			{ text: "NE - Northeast", value: "ne" },
+			{ text: "Cen - Central", value: "cen" }
 		],
 		dates: [],
 		modal: false,
@@ -188,6 +218,28 @@ export default {
 		//
 		apiPath: process.env.VUE_APP_BASE_PATH || "http://localhost:3000"
 	}),
+	computed: {
+		states() {
+			return this.$store.state.states;
+		},
+		//
+		includesDeer() {
+			if (this.category.includes("deer")) {
+				return true;
+			} else {
+				this.clearDeerWeapon();
+				return false;
+			}
+		},
+		dateText() {
+			if (!this.dates) return;
+			const formattedDates = this.dates.map(date => {
+				const words = date.split("-");
+				return `${words[1]}-${words[2]}-${words[0]}`;
+			});
+			return formattedDates.join(" -> ");
+		}
+	},
 	methods: {
 		//
 		clearDeerWeapon() {
@@ -225,7 +277,9 @@ export default {
 
 			// cool, everything is validated.
 			let post = {
-				area: this.area,
+				city: this.city,
+				state: this.state,
+				region: this.region,
 				title: this.title,
 				description: this.description,
 				available: {
@@ -251,25 +305,6 @@ export default {
 			} finally {
 				this.posting = false;
 			}
-		}
-	},
-	computed: {
-		//
-		includesDeer() {
-			if (this.category.includes("deer")) {
-				return true;
-			} else {
-				this.clearDeerWeapon();
-				return false;
-			}
-		},
-		dateText() {
-			if (!this.dates) return;
-			const formattedDates = this.dates.map(date => {
-				const words = date.split("-");
-				return `${words[1]}-${words[2]}-${words[0]}`;
-			});
-			return formattedDates.join(" -> ");
 		}
 	},
 	watch: {
