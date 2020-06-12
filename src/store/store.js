@@ -89,6 +89,9 @@ const store = new Vuex.Store({
 			else state.filters.filterState = '';
 			if (payload.filterRegion) state.filters.filterRegion = payload.filterRegion;
 			else state.filters.filterRegion = '';
+		},
+		storeUser(state, payload) {
+			state.user = payload
 		}
 	}
 });

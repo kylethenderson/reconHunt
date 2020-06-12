@@ -19,7 +19,7 @@
 		</v-row>
 		<v-row v-else>
 			<v-col cols="6">
-				<h3>No listings found for those filters.</h3>
+				<h3>No listings found.</h3>
 			</v-col>
 		</v-row>
 		<div v-if="!!posts.length">
