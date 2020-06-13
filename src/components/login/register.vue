@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<v-form ref="registerForm" lazy-validation v-model="valid">
+		<v-form ref="registerForm" v-model="valid">
 			<v-row justify="center" class="mb-6">
 				<v-col cols="10" md="5">
 					<v-text-field
@@ -79,7 +79,7 @@
 			</v-row>
 			<v-row justify="center">
 				<v-col cols="1" class="mr-2">
-					<v-checkbox hide-details v-model="disclaimer" :rules="[rules.required]"></v-checkbox>
+					<v-checkbox color="primary" hide-details v-model="disclaimer" :rules="[rules.required]"></v-checkbox>
 				</v-col>
 				<v-col cols="9" align-self="center">
 					<span>
@@ -90,7 +90,7 @@
 			</v-row>
 			<v-row>
 				<v-col color="primary" class="text-center">
-					<v-btn :loading="loading" @click="register" color="primary">Sign Up</v-btn>
+					<v-btn :disabled="registerDisabled" :loading="loading" @click="register" color="primary">Sign Up</v-btn>
 				</v-col>
 			</v-row>
 		</v-form>
@@ -126,7 +126,7 @@ export default {
 		confirmPassword: "",
 		showPass: false,
 		showConfirm: false,
-		valid: true,
+		valid: false,
 		loading: false,
 		dialogs: {
 			success: false,
@@ -244,6 +244,9 @@ export default {
 	},
 	computed: {
 		//
+		registerDisabled() {
+			return this.loading || !this.valid;
+		}
 	},
 	created() {
 		//
