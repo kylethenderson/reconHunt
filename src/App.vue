@@ -22,14 +22,14 @@ export default {
 	}),
 	methods: {
 		//
-		checkForTokens() {
+		async checkForTokens() {
 			// check to see if we have a token in storage.
 			// if yes and its expired, refresh them.
 			// otherwise, we've got tokens and they're good, so just set the refresh interval
 			if (localStorage.rHToken) {
 				const decoded = jwt.decode(localStorage.rHToken);
 				if (decoded.exp < Date.now())
-					this.refreshTokens(localStorage.rHRefreshToken);
+					await 	this.refreshTokens(localStorage.rHRefreshToken);
 				this.startRefreshInterval();
 			} else this.$router.push("/login");
 		},

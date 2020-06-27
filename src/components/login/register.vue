@@ -48,7 +48,7 @@
 						label="Username"
 						:rules="[rules.required, rules.min]"
 						v-model="username"
-						:error-messages="usernameExists"
+						:error-messages="usernameExists	"
 					></v-text-field>
 				</v-col>
 				<v-col cols="10" md="5">
@@ -90,7 +90,12 @@
 			</v-row>
 			<v-row>
 				<v-col color="primary" class="text-center">
-					<v-btn :disabled="registerDisabled" :loading="loading" @click="register" color="primary">Sign Up</v-btn>
+					<v-btn
+						:disabled="registerDisabled"
+						:loading="loading"
+						@click="register"
+						color="primary"
+					>Sign Up</v-btn>
 				</v-col>
 			</v-row>
 		</v-form>
@@ -264,6 +269,20 @@ export default {
 				if (value !== this.password)
 					this.passwordMatch = "Passwords do not match";
 				else this.passwordMatch = null;
+			}
+		},
+		username: {
+			immediate: false,
+			handler(value) {
+				if (!this.usernameExists) return;
+				this.usernameExists = null;
+			}
+		},
+		email: {
+			immediate: false,
+			handler(value) {
+				if (!this.emailExists) return;
+				this.emailExists = null;
 			}
 		}
 	}
