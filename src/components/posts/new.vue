@@ -6,7 +6,7 @@
 			</v-col>
 		</v-row>
 		<v-container>
-			<v-form ref="postForm" v-model="valid">
+			<v-form ref="postForm" v-model="valid" enctype="multipart/form-data">
 				<v-row>
 					<v-col cols="5">
 						<v-text-field :rules="[rules.required]" label="City" v-model="city"></v-text-field>
@@ -160,6 +160,19 @@
 						></v-text-field>
 					</v-col>
 				</v-row>
+				<v-row class="pb-4">
+					<v-col cols="12">
+						<v-btn @click="$refs.fileInput.click()" block color="primary">Upload Images</v-btn>
+						<input style="display: none" ref="fileInput" type="file" name="file" @change="selectImage" />
+						<v-alert :value="!!imageUploadError" color="red" outlined dense>{{ imageUploadError }}</v-alert>
+					</v-col>
+				</v-row>
+				<v-row v-for="(image, index) in selectedImages" :key="index">
+					<v-col cols="120" class="py-1">{{ image.name }}</v-col>
+					<v-col cols="2">
+						<v-icon @click="removeImage(index)">mdi-close-circle-outline</v-icon>
+					</v-col>
+				</v-row>
 			</v-form>
 			<v-row justify="end">
 				<v-col cols="4">
@@ -168,9 +181,17 @@
 			</v-row>
 		</v-container>
 		<SuccessDialog
-			:isOpen="dialogs.success"
+			v-model="dialogs.success"
 			@closeDialog="closeDialog('success')"
-			:text="messages.success"
+			title="Post Added"
+			text="Thank you for posting."
+		/>
+		<ErrorDialog
+			v-model="dialogs.error"
+			title="Unable to post ad."
+			@closeDialog="closeDialog('error')"
+			buttonColor="red"
+			:text="messages.error"
 		/>
 	</div>
 </template>
@@ -215,6 +236,9 @@ export default {
 			success: "",
 			error: ""
 		},
+		imageUploadError: "",
+		selectedImage: null,
+		selectedImages: [],
 		//
 		apiPath: process.env.VUE_APP_BASE_PATH || "http://localhost:3000"
 	}),
@@ -248,8 +272,34 @@ export default {
 		closeDialog(dialog) {
 			this.dialogs[dialog] = false;
 			this.messages[dialog] = "";
+			if (dialog === "error") return;
 			this.$refs.postForm.reset();
 			this.$router.push("/posts/list");
+		},
+		selectImage(event) {
+			const maxSize = 200000;
+			const maxImages = 6;
+			const image = event.target.files[0];
+			if (!image) return;
+			const allowedTypes = [
+				"image/jpeg",
+				"image/png",
+				"image/gif",
+				"image/jpg"
+			];
+
+			if (!allowedTypes.includes(image.type))
+				return (this.imageUploadError = "Only images are allowed.");
+			if (image.size > maxSize)
+				return (this.imageUploadError = `File size too large. Max size ${maxSize /
+					1000}Kb.`);
+			if (this.selectedImages.length >= maxImages)
+				return (this.imageUploadError = `Maximum of ${maxImages} images allowed.`);
+
+			this.selectedImages.push(image);
+		},
+		removeImage(index) {
+			this.selectedImages.splice(index, 1);
 		},
 		async createPost() {
 			this.posting = true;
@@ -275,8 +325,13 @@ export default {
 				return;
 			}
 
+			const formData = new FormData();
+			this.selectedImages.forEach(image => {
+				formData.append("image", image);
+			});
+
 			// cool, everything is validated.
-			let post = {
+			const post = {
 				city: this.city,
 				state: this.state,
 				region: this.region,
@@ -292,15 +347,19 @@ export default {
 				huntableAcres: this.huntableAcres
 			};
 
+			formData.append("data", JSON.stringify(post));
+
 			try {
 				await this.$axios({
 					method: "post",
 					url: `${this.apiPath}/api/post/create`,
-					data: post
+					data: formData,
+					headers: { "Content-Type": "multipart/form-data" }
 				});
 				this.dialogs.success = true;
 			} catch (error) {
-				console.log("Error creating post", error.response.message);
+				console.log("Error creating post", error.response.data.message);
+				this.messages.error = error.response.data.message;
 				this.dialogs.error = true;
 			} finally {
 				this.posting = false;
@@ -311,12 +370,9 @@ export default {
 		dates: {
 			immediate: false,
 			handler(val) {
-				if (val[0]) {
-					this.availableFrom = new Date(val[0]);
-				}
-				if (val[1]) {
-					this.availableTo = new Date(val[0]);
-				}
+				if (val[0]) this.availableFrom = new Date(val[0]);
+				if (val[1]) this.availableTo = new Date(val[1]);
+				else this.availableTo = new Date(val[0]);
 			}
 		}
 	},

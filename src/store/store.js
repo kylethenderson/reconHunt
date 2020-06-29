@@ -30,7 +30,7 @@ const store = new Vuex.Store({
 		states: ["AL", "AK", "AK", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
 	},
 	mutations: {
-		checkLocalStorage(state) {
+		setTokensFromLocal(state) {
 			// put tokens from local storage in the app
 			if (localStorage.rHToken) {
 				state.auth.token = localStorage.rHToken;

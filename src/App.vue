@@ -10,6 +10,7 @@
 <script>
 import Header from "./components/header";
 import jwt from "jsonwebtoken";
+import refreshTokens from "./scripts/refreshTokens";
 
 export default {
 	name: "App",
@@ -23,46 +24,35 @@ export default {
 	methods: {
 		//
 		async checkForTokens() {
-			// check to see if we have a token in storage.
-			// if yes and its expired, refresh them.
-			// otherwise, we've got tokens and they're good, so just set the refresh interval
-			if (localStorage.rHToken) {
-				const decoded = jwt.decode(localStorage.rHToken);
-				if (decoded.exp < Date.now())
-					await 	this.refreshTokens(localStorage.rHRefreshToken);
-				this.startRefreshInterval();
-			} else this.$router.push("/login");
-		},
-		async refreshTokens(token) {
-			try {
-				// try to refresh tokens
-				const tokens = await this.$axios({
-					method: "post",
-					url: `${this.apiPath}/api/user/refreshToken`,
-					data: {
-						token: token || this.$store.state.auth.refreshToken
-					}
-				});
-				this.$store.commit("updateTokens", tokens.data);
-			} catch (error) {
-				// if we get a JWTEXPIRE error back, logout and route to login page.
-				if (error.response && error.response.code === "JWTEXPIRE");
-				this.$store.commit("logout");
-				this.$router.push("/login");
-			} finally {
-				//
+			// if we don't have tokens in local storage, go to login
+			if (!localStorage.rHToken || !localStorage.rHRefreshToken)
+				return this.$router.push("/login");
+
+			// we've got tokens, make sure they're in the app
+			this.$store.commit("setTokensFromLocal");
+
+			// check expiration - if expired, get new tokens
+			const decoded = jwt.decode(localStorage.rHToken);
+			if (decoded.exp * 1000 < Date.now()) {
+				await refreshTokens(localStorage.rHRefreshToken);
 			}
+			// start the interval for getting new tokens when expired
+			this.startRefreshInterval();
 		},
 		startRefreshInterval() {
-			this.refreshInterval = setInterval(this.refreshTokens, 60000 * 14);
+			// check every second for expired token,
+			// once expired, get new ones
+			this.refreshInterval = setInterval(() => {
+				const decoded = jwt.decode(localStorage.rHToken);
+				if (decoded.exp * 1000 < Date.now())
+					refreshTokens(localStorage.rHRefreshToken);
+			}, 1000);
 		}
 	},
 	mounted() {
-		// this.$store.commit("checkLocalStorage");
-	},
-	created() {
 		this.checkForTokens();
 	},
+	created() {},
 	beforeDestroy() {
 		clearInterval(this.refreshInterval);
 	}

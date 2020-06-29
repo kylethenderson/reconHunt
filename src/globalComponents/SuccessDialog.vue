@@ -1,10 +1,12 @@
 <template>
-	<v-dialog v-model="dialog">
+	<v-dialog :value="value">
 		<v-card>
-			<v-card-title>{{ title }}</v-card-title>
-			<v-card-text>{{ title }}</v-card-text>
+			<v-card-title class="headline">{{ title }}</v-card-title>
+			<v-card-text class="title">{{ text }}</v-card-text>
 			<v-card-actions>
-				<v-btn :color="buttonColor" @click="closeDialog">ok</v-btn>
+				<v-spacer></v-spacer>
+				<v-btn class="mb-3" :color="buttonColor" @click="closeDialog">{{ buttonText }}</v-btn>
+				<v-spacer></v-spacer>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>
@@ -13,21 +15,24 @@
 <script>
 export default {
 	props: {
-		isOpen: {
-			type: Boolean,
-			required: true
+		value: {
+			type: Boolean
 		},
 		title: {
 			type: String,
-			default: "Victory!"
+			default: "Success!"
 		},
-		test: {
+		text: {
 			type: String,
-			default: "Cool. Click 'ok' to continue"
+			default: "Click 'ok' to continue"
 		},
 		toolbarColor: {
 			type: String,
 			default: "primary"
+		},
+		buttonText: {
+			tye: String,
+			default: "Ok"
 		},
 		buttonColor: {
 			type: String,
@@ -46,14 +51,6 @@ export default {
 	},
 	computed: {
 		//
-	},
-	watch: {
-		isOpen: {
-			immediate: true,
-			handler(value) {
-				this.dialog = value;
-			}
-		}
 	},
 	created() {
 		//

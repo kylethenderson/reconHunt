@@ -1,10 +1,12 @@
 <template>
-	<v-dialog>
-		<v-card>
-			<v-card-title>{{ title }}</v-card-title>
-			<v-card-text>Whatever you just did worked!</v-card-text>
+	<v-dialog :value="value">
+		<v-card style="text-align: center;">
+			<v-card-title class="center headline">{{ title }}</v-card-title>
+			<v-card-text class="center title">{{ text }}</v-card-text>
 			<v-card-actions>
-				<v-btn :color="buttonColor" @click="closeDialog">ok</v-btn>
+				<v-spacer></v-spacer>
+				<v-btn :color="buttonColor" class="mb-2" dark @click="closeDialog">{{ buttonText}}</v-btn>
+				<v-spacer></v-spacer>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>
@@ -13,7 +15,7 @@
 <script>
 export default {
 	props: {
-		isOpen: {
+		value: {
 			type: Boolean,
 			required: true
 		},
@@ -21,13 +23,17 @@ export default {
 			type: String,
 			default: "Oh snap!"
 		},
-		test: {
+		text: {
 			type: String,
 			default: "Something went awry. Try again later."
 		},
 		toolbarColor: {
 			type: String,
 			default: "primary"
+		},
+		buttonText: {
+			type: String,
+			default: "Ok"
 		},
 		buttonColor: {
 			type: String,
@@ -36,7 +42,6 @@ export default {
 	},
 	data: () => ({
 		//
-		dialog: false
 	}),
 	methods: {
 		//
@@ -47,14 +52,6 @@ export default {
 	computed: {
 		//
 	},
-	watch: {
-		isOpen: {
-			immediate: false,
-			handler(value) {
-				this.dialog = value;
-			}
-		}
-	},
 	created() {
 		//
 	}
@@ -62,4 +59,8 @@ export default {
 </script>
 
 <style lang='scss' scoped>
+.center {
+	display: inline-block;
+	text-align: center;
+}
 </style>

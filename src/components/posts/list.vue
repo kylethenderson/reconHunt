@@ -43,19 +43,31 @@
 						<v-col cols="12">
 							<p>{{ post.description | truncateDescription }}</p>
 						</v-col>
-						<v-col cols="8">
-							<p>
-								<strong>Huntable Area: {{ post.huntableAcres }} acres</strong>
+						<v-col cols="8" class="py-1">
+							<p class="mb-0">
+								<strong>Acreage: {{ post.huntableAcres }} acres</strong>
 							</p>
 						</v-col>
-						<v-col cols="4" class="text-center">
+						<v-col cols="4" class="text-center py-1">
 							<strong>${{ post.price }}/day</strong>
+						</v-col>
+						<v-col cols="8" class="py-1">
+							<p class="mb-1">
+								<strong>
+									Available:
+									<br />
+									{{ post.available.from | formatDate }} - {{ post.available.to | formatDate }}
+								</strong>
+							</p>
 						</v-col>
 					</v-row>
 				</v-card-text>
 				<v-card-actions>
 					<v-spacer></v-spacer>
-					<v-btn @click.stop="viewPost(post)" text style="z-index: 0 !important;">More details ...</v-btn>
+					<v-btn @click.stop="viewPost(post)" text style="z-index: 0 !important;">
+						Details
+						<v-icon small>mdi-chevron-right</v-icon>
+					</v-btn>
 				</v-card-actions>
 				<v-divider style="margin: 10px 0px 15px 0px !important;"></v-divider>
 			</div>
@@ -84,7 +96,6 @@ export default {
 		//
 		async fetchPostings() {
 			const { filters, search } = this.$store.state;
-			console.log(filters, search);
 			// set default fetch params
 			let fetchObject = {
 				skip: 0,
@@ -96,7 +107,7 @@ export default {
 				filterCategory: []
 			};
 
-			// set params from api call
+			// set params for api call
 			if (this.skip) fetchObject.skip = this.skip;
 			if (this.sort) fetchObject.sort = this.sort;
 			if (this.itemsPerPage) fetchObject.itemsPerPage = this.itemsPerPage;
@@ -150,6 +161,7 @@ export default {
 	filters: {
 		truncateDescription(value) {
 			if (!value) return "";
+			if (value.length < 150) return value;
 			const truncated = value.substring(0, 150);
 			return `${truncated} ...`;
 		},
