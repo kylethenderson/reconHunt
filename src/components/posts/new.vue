@@ -176,7 +176,13 @@
 			</v-form>
 			<v-row justify="end">
 				<v-col cols="4">
-					<v-btn block color="primary" :loading="posting" :disabled="posting" @click="createPost">Post</v-btn>
+					<v-btn
+						block
+						color="primary"
+						:loading="posting"
+						:disabled="posting || !valid"
+						@click="createPost"
+					>Post</v-btn>
 				</v-col>
 			</v-row>
 		</v-container>
@@ -214,7 +220,7 @@ export default {
 		rules: {
 			required: val => !!val || "Input is required"
 		},
-		valid: true,
+		valid: false,
 		categoryError: "",
 		methodError: "",
 		//
@@ -277,7 +283,8 @@ export default {
 			this.$router.push("/posts/list");
 		},
 		selectImage(event) {
-			const maxSize = 200000;
+			this.imageUploadError = "";
+			const maxSize = 3000000;
 			const maxImages = 6;
 			const image = event.target.files[0];
 			if (!image) return;
@@ -292,7 +299,7 @@ export default {
 				return (this.imageUploadError = "Only images are allowed.");
 			if (image.size > maxSize)
 				return (this.imageUploadError = `File size too large. Max size ${maxSize /
-					1000}Kb.`);
+					1000000}Mb.`);
 			if (this.selectedImages.length >= maxImages)
 				return (this.imageUploadError = `Maximum of ${maxImages} images allowed.`);
 

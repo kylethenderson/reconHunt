@@ -1,7 +1,11 @@
 {
-	"name": "select_lander",
+	"name": "recon_hunt",
 	"version": "0.1.0",
 	"private": true,
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/kylethenderson/reconHunt.git"
+	},
 	"scripts": {
 		"serve": "vue-cli-service serve",
 		"build": "vue-cli-service build",

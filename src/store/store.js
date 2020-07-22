@@ -22,6 +22,9 @@ const store = new Vuex.Store({
 			//
 		},
 		search: '',
+		pagination: {
+			skip: 0,
+		},
 		filters: {
 			filterState: '',
 			filterRegion: '',
@@ -89,6 +92,10 @@ const store = new Vuex.Store({
 			else state.filters.filterState = '';
 			if (payload.filterRegion) state.filters.filterRegion = payload.filterRegion;
 			else state.filters.filterRegion = '';
+		},
+		storePagination(state, payload) {
+			const keys = Object.keys(payload);
+			keys.forEach(key => state.pagination[key] = payload[key]);
 		},
 		storeUser(state, payload) {
 			state.user = payload

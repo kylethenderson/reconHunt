@@ -76,6 +76,11 @@
 				>{{ editMode ? 'Save' : 'Edit Settings'}}</v-btn>
 			</v-col>
 		</v-row>
+		<v-row v-if="editMode" justify="center">
+			<v-col cols="6">
+				<v-btn block color="primary" text @click="editMode = false;">Cancel</v-btn>
+			</v-col>
+		</v-row>
 	</div>
 </template>
 
@@ -146,7 +151,8 @@ export default {
 					firstName: response.data.firstName,
 					lastName: response.data.lastName,
 					email: response.data.email,
-					phone: response.data.phone
+					phone: response.data.phone,
+					emailNotifications: response.data.emailNotifications
 				};
 				this.$store.commit("storeUser", user);
 			} catch (error) {

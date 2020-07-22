@@ -6,6 +6,7 @@ import PostList from '../components/posts/list'
 import User from '../components/user'
 import UserSettings from '../components/user/settings'
 import ViewPost from '../components/posts/view'
+import Contact from '../components/contact'
 
 const routes = [
 	{
@@ -48,6 +49,11 @@ const routes = [
 				component: UserSettings
 			}
 		]
+	},
+	{
+		path: '/contact',
+		name: 'Contact',
+		component: Contact
 	}
 ]
 

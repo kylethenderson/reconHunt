@@ -32,17 +32,17 @@
 					<strong>Hunting Categories:</strong>
 				</p>
 			</v-col>
-			<v-col cols="4" class="py-0" v-for="(item, index) in post.category" :key="index">
-				<span>{{ item.name | capitalizeSingle }}</span>
+			<v-col cols="4" class="py-0" v-for="(item, index) in categories" :key="index">
+				<span>{{ item | capitalizeSingle }}</span>
 			</v-col>
 
-			<template v-if="Object.keys(post.category).includes('deer')">
+			<template v-if="categories.includes('deer')">
 				<v-col cols="12">
 					<p class="mb-0">
 						<strong>Allowed Deer Hunting Methods:</strong>
 					</p>
 					<span
-						v-for="(weapon, index) in post.category.deer.methods"
+						v-for="(weapon, index) in post.category.deer.options.hunting_methods"
 						:key="index"
 						class="mr-6"
 					>{{ weapon | capitalizeSingle }}</span>
@@ -58,35 +58,13 @@
 			</v-col>
 		</v-row>
 		<v-row>
-			<v-slide-group v-model="slideGroup" class="pa-4" show-arrows>
-				<v-slide-item
-					v-for="(image, index) in post.images"
-					:key="index"
-					v-slot:default="{ active, toggle }"
-				>
-					<v-card
-						:color="active ? 'primary' : 'grey lighten-1'"
-						class="ma-4"
-						height="200"
-						width="100"
-						@click="toggle"
-					>
-						<v-row class="fill-height" align="center" justify="center">
-							<v-scale-transition>
-								<v-icon v-if="active" color="white" size="48" v-text="'mdi-close-circle-outline'"></v-icon>
-							</v-scale-transition>
-						</v-row>
-					</v-card>
-				</v-slide-item>
-			</v-slide-group>
-
-			<v-expand-transition>
-				<v-sheet v-if="slideGroup != null" color="grey lighten-4" height="200" tile>
-					<v-row class="fill-height" align="center" justify="center">
-						<h3 class="title">Selected {{ slideGroup }}</h3>
-					</v-row>
-				</v-sheet>
-			</v-expand-transition>
+			<v-col v-for="(image, index) in post.images" :key="index">
+				<img
+					:src="`${apiPath}/images/thumbnail_${image.filename}`"
+					@click="viewImage(image)"
+					class="pointer"
+				/>
+			</v-col>
 		</v-row>
 		<v-row>
 			<v-col class="text-right mr-4">
@@ -98,28 +76,44 @@
 		</v-row>
 
 		<!-- contact dialog -->
-		<ContactDialog :isOpen="dialogs.contact" @closeDialog="closeDialog('contact')" />
+		<ContactDialog v-model="dialogs.contact" />
+
+		<!-- image dialog -->
+		<ImageDialog v-model="dialogs.image" :image="selectedImage"></ImageDialog>
 	</div>
 </template>
 
 <script>
 import ContactDialog from "./contactDialog";
+import ImageDialog from "./imageDialog";
 
 export default {
 	components: {
-		ContactDialog
+		ContactDialog,
+		ImageDialog
 	},
 	data: () => ({
 		post: null,
 		dialogs: {
 			contact: false,
 			success: false,
-			error: false
+			error: false,
+			image: false
 		},
-		slideGroup: null,
+
+		selectedImage: {},
 		//
 		apiPath: process.env.VUE_APP_BASE_PATH
 	}),
+	computed: {
+		categories() {
+			const keys = Object.keys(this.post.category);
+			return keys;
+		},
+		imageDialog() {
+			return this.dialogs.image;
+		}
+	},
 	methods: {
 		//
 		async fetchPost() {
@@ -134,25 +128,31 @@ export default {
 
 				this.post = response.data;
 			} catch (error) {
-				console.log("oh noes!", error.response);
+				console.log("richard, what'd you do?!?", error.response);
 				this.$router.push("/posts/list");
 			}
 		},
-		closeDialog(dialog) {
-			this.dialogs[dialog] = false;
-		}
-	},
-	computed: {
-		//
-	},
-	created() {
-		//
+		viewImage(image) {
+			this.dialogs.image = true;
+			this.selectedImage = image;
+		},
 	},
 	mounted() {
 		this.fetchPost();
+	},
+	watch: {
+		imageDialog: {
+			immediate: true,
+			handler(value) {
+				if (!value) this.selectedImage = {};
+			}
+		}
 	}
 };
 </script>
 
 <style lang='scss' scoped>
+.pointer:hover {
+	cursor: pointer;
+}
 </style>

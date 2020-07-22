@@ -5,9 +5,10 @@
 		color="primary"
 		width="225"
 		right
-		v-model="drawer"
+		:value="value"
 		class="full-height"
 		temporary
+		@input="updateInput"
 	>
 		<v-list>
 			<v-row justify="space-between">
@@ -15,7 +16,7 @@
 					<h3>Hi, {{ $store.state.user.firstName | capitalizeSingle }}</h3>
 				</v-col>
 				<v-col cols="4" class="text-center">
-					<v-icon @click="$emit('toggleDrawer')" class="mr-3">mdi-close</v-icon>
+					<v-icon @click="$emit('input', false)" class="mr-3">mdi-close</v-icon>
 				</v-col>
 			</v-row>
 			<template v-for="(item, index) in drawerItems">
@@ -31,28 +32,21 @@
 		</v-list>
 		<template v-slot:append>
 			<div class="pa-2">
-				<v-btn text block @click="dialogs.contact = true;">Contact Us</v-btn>
+				<v-btn text block to="/contact">Contact Us</v-btn>
 			</div>
 			<div class="pa-2">
 				<v-btn text block @click="logout">Logout</v-btn>
 			</div>
 		</template>
-		<ContactDialog :isOpen="dialogs.contact" @closeDialog="closeDialog('contact')" />
 	</v-navigation-drawer>
 </template>
 
 <script>
-import ContactDialog from "./contactDialog";
-
 export default {
-	components: {
-		ContactDialog
-	},
 	props: {
-		isOpen: Boolean
+		value: Boolean
 	},
 	data: () => ({
-		drawer: false,
 		dialogs: {
 			contact: false
 		},
@@ -81,8 +75,8 @@ export default {
 			this.$store.commit("logout");
 			this.$router.push("/login");
 		},
-		closeDialog(dialog) {
-			this.dialogs[dialog] = false;
+		updateInput(value) {
+			this.$emit("input", value);
 		}
 	},
 	computed: {
@@ -90,14 +84,6 @@ export default {
 	},
 	created() {
 		//
-	},
-	watch: {
-		isOpen: {
-			immediate: true,
-			handler(value) {
-				this.drawer = value;
-			}
-		}
 	}
 };
 </script>

@@ -1,5 +1,5 @@
 <template>
-	<v-dialog v-model="dialog" persistent>
+	<v-dialog :value="value" persistent>
 		<v-card>
 			<v-toolbar color="primary" dark>
 				<v-toolbar-title>Contact</v-toolbar-title>
@@ -36,7 +36,7 @@ import jwt from "jsonwebtoken";
 
 export default {
 	props: {
-		isOpen: Boolean
+		value: Boolean
 	},
 	data: () => ({
 		//
@@ -45,18 +45,21 @@ export default {
 		email: "",
 		message: "",
 		//
-		submitting: false
+		submitting: false,
+		//
+		apiPath: process.env.VUE_APP_BASE_PATH
 	}),
 	methods: {
 		//
 		closeDialog() {
 			// clear data
-			this.$emit("closeDialog");
+			this.message = "";
+			this.$emit("input", false);
 		},
-		submit() {
+		async submit() {
 			this.submitting = true;
 
-			const submitObject = {
+			const data = {
 				postId: this.$route.params.id,
 				name: this.name,
 				email: this.email,
@@ -64,8 +67,12 @@ export default {
 			};
 
 			try {
-				console.log(submitObject);
-				this.$emit("closeDialog");
+				await this.$axios({
+					method: "post",
+					url: `${this.apiPath}/api/post/contact`,
+					data
+				});
+				this.closeDialog();
 			} catch (error) {
 				console.log("Error submitting interest", error);
 			} finally {
@@ -88,17 +95,6 @@ export default {
 			this.userData.lastName.charAt(0).toUpperCase() +
 			this.userData.lastName.slice(1);
 		this.name = `${firstName} ${lastName}`;
-	},
-	created() {
-		//
-	},
-	watch: {
-		isOpen: {
-			immediate: false,
-			handler(val) {
-				this.dialog = val;
-			}
-		}
 	}
 };
 </script>

@@ -6,19 +6,23 @@
 			:menu="filterMenu"
 			@openFilter="filterMenu = true"
 			@closeMenu="filterMenu = false"
+			v-if="!errors.fetch"
 		/>
 		<v-row justify="space-between" v-if="!!posts.length">
 			<v-col cols="6">
 				<h3>{{ posts.length }} Listings</h3>
 			</v-col>
 			<v-col cols="6" class="text-right">
-				<!-- <v-icon @click="pageBack">mdi-chevron-left</v-icon>
-				<span style="font-size: 16px; margin: 10px 0px;">1-{{ posts.length }} of {{ posts.length }}</span>
-				<v-icon @click="pageForward">mdi-chevron-right</v-icon>-->
+				<v-icon @click="pageBack">mdi-chevron-left</v-icon>
+				<span style="font-size: 16px; margin: 10px 0px;">{{ paginationText }}</span>
+				<v-icon @click="pageForward">mdi-chevron-right</v-icon>
 			</v-col>
 		</v-row>
-		<v-row v-else>
-			<v-col cols="6">
+		<v-row v-else justify="center">
+			<v-col v-if="!errors.fetch" cols="2" class="mt-12" align-self-center>
+				<v-progress-circular size="60" indeterminate color="primary"></v-progress-circular>
+			</v-col>
+			<v-col v-else-if="!errors.fetch && !fetchingPosts" cols="6" class="text-center">
 				<h3>No listings found.</h3>
 			</v-col>
 		</v-row>
@@ -81,8 +85,14 @@ import ListToolbar from "./listToolbar";
 export default {
 	components: { ListToolbar },
 	data: () => ({
+		fetchingPosts: false,
+		errors: {
+			fetch: false
+		},
+		skip: 0,
 		search: "",
 		posts: [],
+		postTotal: 0,
 		filterMenu: false,
 		//
 		filterCategories: [],
@@ -95,7 +105,10 @@ export default {
 	methods: {
 		//
 		async fetchPostings() {
-			const { filters, search } = this.$store.state;
+			this.errors.fetch = false;
+			this.fetchingPosts = true;
+			const { filters, search, pagination } = this.$store.state;
+			const { skip, sort, itemsPerPage } = pagination;
 			// set default fetch params
 			let fetchObject = {
 				skip: 0,
@@ -108,9 +121,9 @@ export default {
 			};
 
 			// set params for api call
-			if (this.skip) fetchObject.skip = this.skip;
-			if (this.sort) fetchObject.sort = this.sort;
-			if (this.itemsPerPage) fetchObject.itemsPerPage = this.itemsPerPage;
+			if (skip) fetchObject.skip = skip;
+			if (sort) fetchObject.sort = sort;
+			if (itemsPerPage) fetchObject.itemsPerPage = this.itemsPerPage;
 			if (filters.filterState)
 				fetchObject.filterState = filters.filterState;
 			if (filters.filterRegion)
@@ -119,22 +132,33 @@ export default {
 				fetchObject.filterCategory = filters.filterCategories;
 			if (search) fetchObject.search = search;
 
-			const posts = await this.$axios({
-				method: "get",
-				url: `${this.apiPath}/api/post/list`,
-				params: fetchObject
-			});
-			this.posts = posts.data;
+			try {
+				//
+				const response = await this.$axios({
+					method: "get",
+					url: `${this.apiPath}/api/post/list`,
+					params: fetchObject
+				});
+				const { total, posts } = response.data;
+				this.postTotal = total;
+				this.posts = posts;
+			} catch (error) {
+				this.errors.fetch = true;
+				console.log(error);
+			} finally {
+				//
+				this.fetchingPosts = false;
+			}
 		},
 		async searchPosts(value) {
 			this.$store.commit("storeSearch", value);
-			this.skip = 0;
+			this.$store.commit('storePagination', {skip: 0})
 			this.fetchPostings();
 		},
 		applyFilters(value) {
 			console.log(value);
 			this.$store.commit("storeFilters", value);
-			this.skip = 0;
+			this.$store.commit('storePagination', {skip: 0})
 			this.filterMenu = false;
 			this.fetchPostings();
 		},
@@ -143,14 +167,32 @@ export default {
 			this.$router.push(`/posts/view/${post.uuid}`);
 		},
 		pageForward() {
-			console.log("forward");
+			let skip = this.pagination.skip;
+			skip++;
+			if (skip * 25 > this.postTotal) return;
+			this.$store.commit("storePagination", { skip });
+			this.fetchPostings();
 		},
 		pageBack() {
-			console.log("back");
+			let skip = this.pagination.skip;
+			if (skip == 0) return;
+			skip--;
+			this.$store.commit("storePagination", { skip });
+			this.fetchPostings();
 		}
 	},
 	computed: {
+		pagination() {
+			return this.$store.state.pagination;
+		},
 		//
+		paginationText() {
+			const start = this.pagination.skip * 25 + 1;
+			let end = 0;
+			if (this.posts.length == 25) end = start + 24;
+			else end = start + this.posts.length - 1;
+			return `${start} - ${end} of ${this.postTotal}`;
+		}
 	},
 	created() {
 		//

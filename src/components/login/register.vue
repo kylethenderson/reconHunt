@@ -30,7 +30,7 @@
 						:error-messages="emailExists"
 					></v-text-field>
 				</v-col>
-				<v-col cols="10" md="5">
+				<v-col cols="6" md="5">
 					<v-text-field
 						aria-autocomplete="off"
 						type="text"
@@ -39,6 +39,17 @@
 						label="Phone Number"
 						:rules="[rules.required]"
 						v-model="phone"
+					></v-text-field>
+				</v-col>
+				<v-col cols="4" md="5">
+					<v-text-field
+						aria-autocomplete="off"
+						type="text"
+						maxlength="5"
+						hide-details="auto"
+						label="Zip Code"
+						:rules="[rules.required]"
+						v-model="zip"
 					></v-text-field>
 				</v-col>
 				<v-col cols="10" md="5">
@@ -124,6 +135,7 @@ export default {
 		lastName: "",
 		email: "",
 		phone: "",
+		zip: "",
 		username: "",
 		password: "",
 		disclaimer: false,

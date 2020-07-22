@@ -44,6 +44,10 @@ export default {
 			// once expired, get new ones
 			this.refreshInterval = setInterval(() => {
 				const decoded = jwt.decode(localStorage.rHToken);
+				if (!decoded) {
+					clearInterval(this.refreshInterval);
+					return;
+				}
 				if (decoded.exp * 1000 < Date.now())
 					refreshTokens(localStorage.rHRefreshToken);
 			}, 1000);

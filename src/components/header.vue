@@ -1,7 +1,10 @@
 <template>
 	<div>
-		<v-app-bar v-if="atHome" app color="primary" dark>
+		<v-app-bar app color="primary" dark>
+			<template v-if="atHome" >
+
 			<v-toolbar-title @click="goHome" class="nav-title">Recon Hunt</v-toolbar-title>
+			</template>
 			<v-spacer></v-spacer>
 			<v-toolbar-items>
 				<template v-if="loggedIn">
@@ -35,7 +38,7 @@
 				</template>
 			</v-toolbar-items>
 		</v-app-bar>
-		<NavDrawer :isOpen="drawer" @toggleDrawer="drawer = !drawer" />
+		<NavDrawer v-model="drawer" />
 	</div>
 </template>
 
