@@ -1,6 +1,6 @@
 <template>
-	<v-dialog :value="value">
-		<v-card>
+	<v-dialog :value="value" persistent>
+		<v-card class="text-xs-center">
 			<v-card-title class="headline">{{ title }}</v-card-title>
 			<v-card-text class="title">{{ text }}</v-card-text>
 			<v-card-actions>
@@ -16,7 +16,8 @@
 export default {
 	props: {
 		value: {
-			type: Boolean
+			type: Boolean,
+			required: true
 		},
 		title: {
 			type: String,
@@ -46,7 +47,7 @@ export default {
 	methods: {
 		//
 		closeDialog() {
-			this.$emit("closeDialog");
+			this.$emit("input", false);
 		}
 	},
 	computed: {

@@ -1,5 +1,5 @@
 <template>
-	<v-dialog :value="value">
+	<v-dialog :value="value" persistent>
 		<v-card style="text-align: center;">
 			<v-card-title class="center headline">{{ title }}</v-card-title>
 			<v-card-text class="center title">{{ text }}</v-card-text>
@@ -46,7 +46,7 @@ export default {
 	methods: {
 		//
 		closeDialog() {
-			this.$emit("closeDialog");
+			this.$emit("input", false);
 		}
 	},
 	computed: {

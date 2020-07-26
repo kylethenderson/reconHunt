@@ -4,20 +4,13 @@
 			@applyFilters="applyFilters"
 			@searchPosts="searchPosts"
 			:menu="filterMenu"
+			:paginationText="paginationText"
+			@pageBack="pageBack"
+			@pageForward="pageForward"
 			@openFilter="filterMenu = true"
 			@closeMenu="filterMenu = false"
 			v-if="!errors.fetch"
 		/>
-		<v-row justify="space-between" v-if="!!posts.length">
-			<v-col cols="6">
-				<h3>{{ posts.length }} Listings</h3>
-			</v-col>
-			<v-col cols="6" class="text-right">
-				<v-icon @click="pageBack">mdi-chevron-left</v-icon>
-				<span style="font-size: 16px; margin: 10px 0px;">{{ paginationText }}</span>
-				<v-icon @click="pageForward">mdi-chevron-right</v-icon>
-			</v-col>
-		</v-row>
 		<v-row v-else justify="center">
 			<v-col v-if="!errors.fetch" cols="2" class="mt-12" align-self-center>
 				<v-progress-circular size="60" indeterminate color="primary"></v-progress-circular>
@@ -39,7 +32,12 @@
 						<h3>{{ post.title | truncateTitle }}</h3>
 					</v-col>
 					<v-col class="text-right">
-						<h4>{{ post.city}}, {{ post.state }}</h4>
+						<h4>{{ post.city | capitalize }}, {{ post.state }}</h4>
+					</v-col>
+				</v-row>
+				<v-row v-if="post.images.length" justify="center">
+					<v-col cols="10" class="py-0">
+						<v-img :src="`${apiPath}/images/${post.images[0].filename}`"></v-img>
 					</v-col>
 				</v-row>
 				<v-card-text class="py-0">
@@ -152,13 +150,13 @@ export default {
 		},
 		async searchPosts(value) {
 			this.$store.commit("storeSearch", value);
-			this.$store.commit('storePagination', {skip: 0})
+			this.$store.commit("storePagination", { skip: 0 });
 			this.fetchPostings();
 		},
 		applyFilters(value) {
 			console.log(value);
 			this.$store.commit("storeFilters", value);
-			this.$store.commit('storePagination', {skip: 0})
+			this.$store.commit("storePagination", { skip: 0 });
 			this.filterMenu = false;
 			this.fetchPostings();
 		},

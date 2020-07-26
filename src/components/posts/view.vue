@@ -76,7 +76,13 @@
 		</v-row>
 
 		<!-- contact dialog -->
-		<ContactDialog v-model="dialogs.contact" />
+		<ContactDialog v-model="dialogs.contact" @emailResult="emailResult" />
+
+		<!-- success dialog -->
+		<SuccessDialog v-model="dialogs.success" :title="title.success" :text="text.success" />
+
+		<!-- error dialog -->
+		<ErrorDialog v-model="dialogs.error" :title="title.error" :text="text.error" />
 
 		<!-- image dialog -->
 		<ImageDialog v-model="dialogs.image" :image="selectedImage"></ImageDialog>
@@ -99,6 +105,14 @@ export default {
 			success: false,
 			error: false,
 			image: false
+		},
+		title: {
+			success: null,
+			error: null
+		},
+		text: {
+			success: null,
+			error: null
 		},
 
 		selectedImage: {},
@@ -136,6 +150,17 @@ export default {
 			this.dialogs.image = true;
 			this.selectedImage = image;
 		},
+		emailResult(object) {
+			if (object.result) {
+				this.dialogs.success = true;
+				this.title.success = "Email sent";
+				this.text.success = `Your email has been sent to ${object.username}. `;
+			} else {
+				this.dialogs.error = true;
+				this.text.error =
+					"There was an error sending the email. Please try again later.";
+			}
+		}
 	},
 	mounted() {
 		this.fetchPost();

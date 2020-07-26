@@ -2,15 +2,9 @@
 	<v-toolbar flat fixed>
 		<v-row justify="space-between">
 			<v-col cols="8" md="6" lg="4" align-self="center">
-				<!-- <v-text-field
-					v-model="search"
-					append-icon="mdi-magnify"
-					label="Search"
-					single-line
-					hide-details="auto"
-					@keydown.enter="searchPosts"
-					@click:append="searchPosts"
-				></v-text-field>-->
+				<v-icon @click="$emit('pageBack')">mdi-chevron-left</v-icon>
+				<span style="font-size: 16px; margin: 10px 0px;">{{ paginationText }}</span>
+				<v-icon @click="$emit('pageForward')">mdi-chevron-right</v-icon>
 			</v-col>
 			<v-col cols="2">
 				<v-menu
@@ -90,7 +84,8 @@
 <script>
 export default {
 	props: {
-		menu: Boolean
+		menu: Boolean,
+		paginationText: String
 	},
 	data: () => ({
 		search: null,

@@ -14,6 +14,15 @@ Vue.filter('formatDate', value => {
 	return `${split[1]}, ${split[2]} ${split[3]}`;
 });
 
+Vue.filter('capitalize', string => {
+	return string.toLowerCase().charAt(0).toUpperCase() + string.slice(1);
+})
+
+Vue.filter('capitalizeAll', string => {
+	const array = string.split(' ');
+	return array.map(item => item.toLowerCase().charAt(0).toUpperCase() + item.slice(1)).join(' ');
+})
+
 // Add a request interceptor
 axios.interceptors.request.use(async (req) => {
 	// add auth header to each request if we have a token

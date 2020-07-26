@@ -9,7 +9,7 @@
 			<v-container>
 				<v-row justify="center">
 					<v-col cols="10">
-						<p>Fill out the form below and we'll email the property owner your details.</p>
+						<p>Fill out the form below and we'll initiate contact with the property owner for you.</p>
 					</v-col>
 				</v-row>
 				<v-row justify="center">
@@ -40,7 +40,6 @@ export default {
 	},
 	data: () => ({
 		//
-		dialog: false,
 		name: "",
 		email: "",
 		message: "",
@@ -67,14 +66,18 @@ export default {
 			};
 
 			try {
-				await this.$axios({
+				const response = await this.$axios({
 					method: "post",
 					url: `${this.apiPath}/api/post/contact`,
 					data
 				});
+				const { username } = response.data;
 				this.closeDialog();
+				this.$emit("emailResult", { result: true, username });
 			} catch (error) {
 				console.log("Error submitting interest", error);
+				this.closeDialog();
+				this.$emit("emailResult", { result: false });
 			} finally {
 				this.submitting = false;
 			}
