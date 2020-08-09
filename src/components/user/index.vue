@@ -9,15 +9,10 @@ export default {
 	data: () => ({
 		//
 	}),
-	methods: {
-		//
+	mounted() {
+		// reroute if user tries to manually for to '/user'
+		if (this.$route.path == "/user") this.$router.push("/user/settings");
 	},
-	computed: {
-		//
-	},
-	created() {
-		//
-	}
 };
 </script>
 

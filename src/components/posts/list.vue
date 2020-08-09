@@ -32,7 +32,7 @@
 						<h3>{{ post.title | truncateTitle }}</h3>
 					</v-col>
 					<v-col class="text-right">
-						<h4>{{ post.city | capitalize }}, {{ post.state }}</h4>
+						<h4>{{ post.city | capitalizeAll }}, {{ post.state }}</h4>
 					</v-col>
 				</v-row>
 				<v-row v-if="post.images.length" justify="center">
@@ -85,7 +85,7 @@ export default {
 	data: () => ({
 		fetchingPosts: false,
 		errors: {
-			fetch: false
+			fetch: false,
 		},
 		skip: 0,
 		search: "",
@@ -98,7 +98,7 @@ export default {
 		filterRegion: null,
 		searchString: null,
 		//
-		apiPath: process.env.VUE_APP_BASE_PATH || "http://localhost:3000"
+		apiPath: process.env.VUE_APP_BASE_PATH || "http://localhost:3000",
 	}),
 	methods: {
 		//
@@ -115,7 +115,7 @@ export default {
 				search: null,
 				filterState: null,
 				filterRegion: null,
-				filterCategory: []
+				filterCategory: [],
 			};
 
 			// set params for api call
@@ -135,7 +135,7 @@ export default {
 				const response = await this.$axios({
 					method: "get",
 					url: `${this.apiPath}/api/post/list`,
-					params: fetchObject
+					params: fetchObject,
 				});
 				const { total, posts } = response.data;
 				this.postTotal = total;
@@ -154,7 +154,6 @@ export default {
 			this.fetchPostings();
 		},
 		applyFilters(value) {
-			console.log(value);
 			this.$store.commit("storeFilters", value);
 			this.$store.commit("storePagination", { skip: 0 });
 			this.filterMenu = false;
@@ -177,7 +176,7 @@ export default {
 			skip--;
 			this.$store.commit("storePagination", { skip });
 			this.fetchPostings();
-		}
+		},
 	},
 	computed: {
 		pagination() {
@@ -190,7 +189,7 @@ export default {
 			if (this.posts.length == 25) end = start + 24;
 			else end = start + this.posts.length - 1;
 			return `${start} - ${end} of ${this.postTotal}`;
-		}
+		},
 	},
 	created() {
 		//
@@ -211,8 +210,8 @@ export default {
 				const truncated = value.substring(0, 30);
 				return `${truncated} ...`;
 			} else return value;
-		}
-	}
+		},
+	},
 };
 </script>
 

@@ -1,9 +1,8 @@
 <template>
 	<div>
 		<v-app-bar app color="primary" dark>
-			<template v-if="atHome" >
-
-			<v-toolbar-title @click="goHome" class="nav-title">Recon Hunt</v-toolbar-title>
+			<template v-if="atHome">
+				<v-toolbar-title @click="goHome" class="nav-title">Recon Hunt</v-toolbar-title>
 			</template>
 			<v-spacer></v-spacer>
 			<v-toolbar-items>
@@ -68,7 +67,7 @@ export default {
 	methods: {
 		//
 		goHome() {
-			this.$router.push("/");
+			this.$router.push("/posts/list");
 		},
 		logout() {
 			this.$store.commit("logout");

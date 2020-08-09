@@ -98,7 +98,11 @@ const store = new Vuex.Store({
 			keys.forEach(key => state.pagination[key] = payload[key]);
 		},
 		storeUser(state, payload) {
-			state.user = payload
+			const keys = Object.keys(payload);
+			keys.forEach(key => {
+				if (key === 'firstName' || key === 'lastName') state.user[key] = payload[key].charAt(0).toUpperCase() + payload[key].slice(1);
+				else state.user[key] = payload[key]
+			})
 		}
 	}
 });

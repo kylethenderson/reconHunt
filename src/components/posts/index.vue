@@ -9,15 +9,10 @@ export default {
 	data: () => ({
 		//
 	}),
-	methods: {
-		//
+	mounted() {
+		// reroute if user tries to manually for to '/posts'
+		if (this.$route.path == "/posts") this.$router.push("/posts/list");
 	},
-	computed: {
-		//
-	},
-	created() {
-		//
-	}
 };
 </script>
 

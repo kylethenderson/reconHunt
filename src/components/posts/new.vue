@@ -1,6 +1,7 @@
 <template>
 	<div>
-		<v-row>
+		<v-row style="position: relative">
+			<v-icon @click="$router.push('/posts/list')" id="backIcon">mdi-arrow-left</v-icon>
 			<v-col class="text-center">
 				<h2>Create a new post</h2>
 			</v-col>
@@ -392,5 +393,10 @@ export default {
 <style lang='scss' scoped>
 h2 {
 	font-weight: 300;
+}
+#backIcon {
+	position: absolute;
+	top: 0px;
+	left: 10px;
 }
 </style>

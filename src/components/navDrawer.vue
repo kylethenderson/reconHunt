@@ -32,7 +32,7 @@
 		</v-list>
 		<template v-slot:append>
 			<div class="pa-2">
-				<v-btn text block to="/contact">Contact Us</v-btn>
+				<v-btn text block to="/about">About Us</v-btn>
 			</div>
 			<div class="pa-2">
 				<v-btn text block @click="logout">Logout</v-btn>
@@ -44,29 +44,34 @@
 <script>
 export default {
 	props: {
-		value: Boolean
+		value: Boolean,
 	},
 	data: () => ({
 		dialogs: {
-			contact: false
+			contact: false,
 		},
 		drawerItems: [
 			{
 				text: "Current Listings",
 				icon: "mdi-format-list-bulleted",
-				to: "/posts/list"
+				to: "/posts/list",
 			},
 			{
 				text: "New Listing",
 				icon: "mdi-plus",
-				to: "/posts/new"
+				to: "/posts/new",
 			},
 			{
 				text: "Profile",
 				icon: "mdi-account-outline",
-				to: "/user/settings"
-			}
-		]
+				to: "/user/settings",
+			},
+			{
+				text: "Contact Us",
+				icon: "mdi-email-outline",
+				to: "/contact",
+			},
+		],
 		//
 	}),
 	methods: {
@@ -77,14 +82,14 @@ export default {
 		},
 		updateInput(value) {
 			this.$emit("input", value);
-		}
+		},
 	},
 	computed: {
 		//
 	},
 	created() {
 		//
-	}
+	},
 };
 </script>
 

@@ -8,21 +8,6 @@ import router from './router/router'
 import axios from 'axios'
 import store from './store/store'
 
-// Global Filters
-Vue.filter('formatDate', value => {
-	const split = new Date(value).toDateString().split(' ');
-	return `${split[1]}, ${split[2]} ${split[3]}`;
-});
-
-Vue.filter('capitalize', string => {
-	return string.toLowerCase().charAt(0).toUpperCase() + string.slice(1);
-})
-
-Vue.filter('capitalizeAll', string => {
-	const array = string.split(' ');
-	return array.map(item => item.toLowerCase().charAt(0).toUpperCase() + item.slice(1)).join(' ');
-})
-
 // Add a request interceptor
 axios.interceptors.request.use(async (req) => {
 	// add auth header to each request if we have a token
@@ -85,6 +70,21 @@ Vue.filter('capitalizeSingle', function (value) {
 	// capilatize the first word
 	return value.charAt(0).toUpperCase() + value.slice(1)
 })
+
+Vue.filter('capitalizeAll', string => {
+	if (!string) return '';
+	// ensure its a string and all lower case
+	string = string.toString().toLowerCase();
+	// create array of single word strings
+	const array = string.split(' ');
+	// capitalize each, join them again, and return
+	return array.map(item => item.toLowerCase().charAt(0).toUpperCase() + item.slice(1)).join(' ');
+})
+
+Vue.filter('formatDate', value => {
+	const split = new Date(value).toDateString().split(' ');
+	return `${split[1]}, ${split[2]} ${split[3]}`;
+});
 
 Vue.filter('formatDateShort', function (value) {
 	if (!value) return '';
