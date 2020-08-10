@@ -2,7 +2,7 @@
 	<div id="loginView">
 		<v-row justify="center" class="fill-height" align="center">
 			<v-col cols="12" sm="8" md="6" lg="4">
-				<v-card class="pt-3">
+				<v-card class="pt-3" flat>
 					<v-row justify="center">
 						<v-col cols="9">
 							<v-img src="../../assets/logo.png"></v-img>
@@ -28,16 +28,16 @@ import Register from "./register";
 export default {
 	components: {
 		Login,
-		Register
+		Register,
 	},
 	data: () => ({
-		login: true
+		login: true,
 		//
 	}),
 	methods: {
 		toggleView() {
 			this.login = !this.login;
-		}
+		},
 		//
 	},
 	computed: {
@@ -45,7 +45,7 @@ export default {
 	},
 	created() {
 		//
-	}
+	},
 };
 </script>
 

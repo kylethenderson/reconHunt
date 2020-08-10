@@ -54,19 +54,20 @@ export default {
 				text: "Settings",
 				icon: null,
 				to: "/userSettings",
-				action: null
+				action: null,
 			},
 			{
 				text: "Logout",
 				icon: null,
 				to: null,
-				action: "logout"
-			}
-		]
+				action: "logout",
+			},
+		],
 	}),
 	methods: {
 		//
 		goHome() {
+			if (this.$route.fullPath === "/posts/list") return;
 			this.$router.push("/posts/list");
 		},
 		logout() {
@@ -82,7 +83,7 @@ export default {
 		},
 		toggleDrawer() {
 			this.drawer = !this.drawer;
-		}
+		},
 	},
 	computed: {
 		//
@@ -91,11 +92,11 @@ export default {
 		},
 		atHome() {
 			return this.$route.name !== "home";
-		}
+		},
 	},
 	created() {
 		//
-	}
+	},
 };
 </script>
 
