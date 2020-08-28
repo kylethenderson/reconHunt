@@ -88,11 +88,11 @@
 					></v-text-field>
 				</v-col>
 			</v-row>
-			<v-row justify="center">
+			<v-row justify="center" style="margin-top: -25px;">
 				<v-col cols="1" class="mr-2">
 					<v-checkbox color="primary" hide-details v-model="disclaimer" :rules="[rules.required]"></v-checkbox>
 				</v-col>
-				<v-col cols="9" align-self="center">
+				<v-col cols="9" align-self="center" class="mt-5">
 					<span>
 						I agree to
 						<span @click="openDialog('disclaimer')" class="disclaimer">Terms and Conditions</span>
@@ -126,7 +126,7 @@ import DisclaimerDialog from "../../globalComponents/DisclaimerDialog";
 
 export default {
 	components: {
-		DisclaimerDialog
+		DisclaimerDialog,
 	},
 	data: () => ({
 		apiPath: process.env.VUE_APP_BASE_PATH,
@@ -148,7 +148,7 @@ export default {
 		dialogs: {
 			success: false,
 			error: false,
-			disclaimer: false
+			disclaimer: false,
 		},
 		loginUsername: "",
 		loginPassword: "",
@@ -157,21 +157,21 @@ export default {
 		emailExists: null,
 		passwordMatch: null,
 		rules: {
-			required: val => !!val || "Input Required",
-			min: val => (!!val && val.length >= 6) || "Minimum length is 6",
-			email: val =>
+			required: (val) => !!val || "Input Required",
+			min: (val) => (!!val && val.length >= 6) || "Minimum length is 6",
+			email: (val) =>
 				(!!val && /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(val)) ||
 				"Must be valid email",
-			phone: val =>
+			phone: (val) =>
 				(!!val && /^((\(\d{3}\) ?)|(\d{3}-))?\d{3}-\d{4}$/.test(val)) ||
 				"Must be valid phone number",
-			password: val =>
+			password: (val) =>
 				(!!val &&
 					/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(
 						val
 					)) ||
-				"Password must be at least 8 characters and include a number"
-		}
+				"Password must be at least 8 characters and include a number",
+		},
 	}),
 	methods: {
 		//
@@ -202,7 +202,7 @@ export default {
 				email,
 				phone,
 				username,
-				password: hashedPassword
+				password: hashedPassword,
 			};
 
 			// validate the data before we send it
@@ -233,7 +233,7 @@ export default {
 						`${this.apiPath}/api/user/login`,
 						{
 							username: this.loginUsername,
-							password: this.loginPassword
+							password: this.loginPassword,
 						}
 					);
 					console.log(loginResponse);
@@ -257,13 +257,13 @@ export default {
 					error.response.data.code
 				);
 			}
-		}
+		},
 	},
 	computed: {
 		//
 		registerDisabled() {
 			return this.loading || !this.valid;
-		}
+		},
 	},
 	created() {
 		//
@@ -273,7 +273,7 @@ export default {
 			immediate: false,
 			handler(value) {
 				if (!value) return value;
-			}
+			},
 		},
 		confirmPassword: {
 			immediate: false,
@@ -281,23 +281,23 @@ export default {
 				if (value !== this.password)
 					this.passwordMatch = "Passwords do not match";
 				else this.passwordMatch = null;
-			}
+			},
 		},
 		username: {
 			immediate: false,
 			handler(value) {
 				if (!this.usernameExists) return;
 				this.usernameExists = null;
-			}
+			},
 		},
 		email: {
 			immediate: false,
 			handler(value) {
 				if (!this.emailExists) return;
 				this.emailExists = null;
-			}
-		}
-	}
+			},
+		},
+	},
 };
 </script>
 
