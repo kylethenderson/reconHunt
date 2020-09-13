@@ -2,6 +2,7 @@ const refreshPath = process.env.VUE_APP_BASE_PATH
 import store from '../store/store'
 import router from '../router/router'
 import axios from 'axios'
+import { bus } from '../main'
 
 const refreshTokens = async (token) => {
 	try {
@@ -18,6 +19,7 @@ const refreshTokens = async (token) => {
 		console.log(error)
 		// if we get a JWTEXPIRE error back, logout and route to login page.
 		if (error.response && error.response.code === "JWTEXPIRE") {
+			bus.$emit('clear-interval');
 			store.commit("logout");
 			router.push("/login");
 		}

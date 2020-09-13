@@ -11,6 +11,7 @@
 import Header from "./components/header";
 import jwt from "jsonwebtoken";
 import refreshTokens from "./scripts/refreshTokens";
+import { bus } from './main';
 
 export default {
 	name: "App",
@@ -26,7 +27,7 @@ export default {
 		async checkForTokens() {
 			// if we don't have tokens in local storage, go to login
 			if (!localStorage.rHToken || !localStorage.rHRefreshToken)
-				return this.$router.push("/login");
+				return;
 
 			// we've got tokens, make sure they're in the app
 			this.$store.commit("setTokensFromLocal");
@@ -37,6 +38,7 @@ export default {
 				await refreshTokens(localStorage.rHRefreshToken);
 			}
 			// start the interval for getting new tokens when expired
+			console.log('starting interval')
 			this.startRefreshInterval();
 		},
 		startRefreshInterval() {
@@ -56,7 +58,16 @@ export default {
 	mounted() {
 		this.checkForTokens();
 	},
-	created() {},
+	created() {
+		// start interval when emitted from login and register
+		bus.$on('start-interval', (value) => {
+			console.log('starting interval');
+			this.startRefreshInterval();
+		});
+		bus.$on('clear-interval', (value) => {
+			clearInterval(this.refreshInterval);
+		})
+	},
 	beforeDestroy() {
 		clearInterval(this.refreshInterval);
 	}

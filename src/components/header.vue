@@ -43,6 +43,7 @@
 
 <script>
 import NavDrawer from "./navDrawer";
+import { bus } from '../main'
 
 export default {
 	components: { NavDrawer },
@@ -71,6 +72,7 @@ export default {
 			this.$router.push("/posts/list");
 		},
 		logout() {
+			bus.$emit('clear-interval');
 			this.$store.commit("logout");
 			this.$router.push("/login");
 		},

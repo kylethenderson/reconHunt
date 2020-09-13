@@ -59,7 +59,7 @@
 						label="Username"
 						:rules="[rules.required, rules.min]"
 						v-model="username"
-						:error-messages="usernameExists	"
+						:error-messages="usernameExists"
 					></v-text-field>
 				</v-col>
 				<v-col cols="10" md="5">
@@ -88,7 +88,7 @@
 					></v-text-field>
 				</v-col>
 			</v-row>
-			<v-row justify="center" style="margin-top: -25px;">
+			<!-- <v-row justify="center" style="margin-top: -25px;">
 				<v-col cols="1" class="mr-2">
 					<v-checkbox color="primary" hide-details v-model="disclaimer" :rules="[rules.required]"></v-checkbox>
 				</v-col>
@@ -98,7 +98,7 @@
 						<span @click="openDialog('disclaimer')" class="disclaimer">Terms and Conditions</span>
 					</span>
 				</v-col>
-			</v-row>
+			</v-row>-->
 			<v-row>
 				<v-col color="primary" class="text-center">
 					<v-btn
@@ -113,7 +113,7 @@
 		<v-row>
 			<v-col class="text-center">
 				<span>Already a Member?</span>
-				<v-btn @click="$emit('toggleView')" text small>Log In</v-btn>
+				<v-btn @click="$emit('toggle-view')" text small>Log In</v-btn>
 			</v-col>
 		</v-row>
 		<DisclaimerDialog :isOpen="dialogs.disclaimer" @closeDialog="closeDialog('disclaimer')" />
@@ -123,6 +123,7 @@
 <script>
 import crypto from "crypto";
 import DisclaimerDialog from "../../globalComponents/DisclaimerDialog";
+import { bus } from '../../main'
 
 export default {
 	components: {
@@ -190,6 +191,7 @@ export default {
 			const email = this.email.trim().toLowerCase();
 			const phone = this.phone.trim();
 			const username = this.username.trim();
+			const zip = this.zip.trim();
 			const hashedPassword = crypto
 				.createHash("sha256")
 				.update(this.password.trim())
@@ -202,7 +204,9 @@ export default {
 				email,
 				phone,
 				username,
+				zip,
 				password: hashedPassword,
+				accepted: this.disclaimer,
 			};
 
 			// validate the data before we send it
@@ -225,37 +229,42 @@ export default {
 				// on success - empty data from the inputs
 				this.$refs.registerForm.reset();
 
-				this.loading = false;
-
 				//login the new user
 				try {
 					const loginResponse = await this.$axios.post(
 						`${this.apiPath}/api/user/login`,
 						{
-							username: this.loginUsername,
-							password: this.loginPassword,
+							username,
+							password: hashedPassword,
 						}
 					);
-					console.log(loginResponse);
+					console.log('login response', loginResponse)
 
 					// commit tokens to the store
+					this.$store.commit("login", loginResponse.data);
 
 					// push user to the home page
+					this.$router.push('/');
+					// emit to start refresh token interval
+					bus.$emit('start-interval');
 				} catch (error) {
+					console.log('error in login from register');
 					throw new Error(error);
 				}
 			} catch (error) {
-				this.loading = false;
+				console.log('outer catch', error);
+				console.log(
+					"error in user registration",
+					error.response.data.code
+				);
 				if (error.response.data.code === "USEREXISTS")
 					this.usernameExists =
 						"Username already exists, please choose another.";
 				if (error.response.data.code === "EMAILEXISTS")
 					this.emailExists =
 						"Email already in use, please choose another.";
-				console.log(
-					"error in user registration",
-					error.response.data.code
-				);
+			} finally {
+				this.loading = false;
 			}
 		},
 	},

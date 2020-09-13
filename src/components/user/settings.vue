@@ -3,20 +3,20 @@
 		<h2 style="text-transform: uppercase">user settings</h2>
 		<v-row justify="center">
 			<v-col cols="6">
-				<v-text-field hide-details :readonly="!editMode" label="First Name" v-model="user.firstName"></v-text-field>
+				<v-text-field hide-details="auto" :readonly="!editMode" label="First Name" v-model="user.firstName"></v-text-field>
 			</v-col>
 			<v-col cols="6">
-				<v-text-field hide-details :readonly="!editMode" label="Last Name" v-model="user.lastName"></v-text-field>
+				<v-text-field hide-details="auto" :readonly="!editMode" label="Last Name" v-model="user.lastName"></v-text-field>
 			</v-col>
 		</v-row>
 		<v-row justify="center">
 			<v-col cols="12">
-				<v-text-field hide-details :readonly="!editMode" label="Email" v-model="user.email"></v-text-field>
+				<v-text-field hide-details="auto" :error-messages="emailError" :readonly="!editMode" label="Email" v-model="user.email"></v-text-field>
 			</v-col>
 		</v-row>
 		<v-row justify="center">
 			<v-col cols="6">
-				<v-text-field hide-details :readonly="!editMode" label="Phone" v-model="user.phone"></v-text-field>
+				<v-text-field hide-details="auto" :readonly="!editMode" label="Phone" v-model="user.phone"></v-text-field>
 			</v-col>
 			<v-col cols="6"></v-col>
 		</v-row>
@@ -29,7 +29,7 @@
 					:disabled="!editMode"
 					color="primary"
 					label="Email Notifications"
-					hide-details
+					hide-details="auto"
 					v-model="user.emailNotifications"
 				></v-switch>
 			</v-col>
@@ -95,6 +95,7 @@ export default {
 		newPassword: null,
 		showOld: false,
 		showNew: false,
+		emailError: null,
 		//
 		apiPath: process.env.VUE_APP_BASE_PATH || "http://localhost:3000"
 	}),
@@ -127,6 +128,8 @@ export default {
 			this.editMode = false;
 		},
 		async saveNewUserData(password) {
+			this.emailError = null;
+
 			const data = {
 				...this.user
 			};
@@ -156,6 +159,11 @@ export default {
 				};
 				this.$store.commit("storeUser", user);
 			} catch (error) {
+				// error in email
+				if ( error.response && error.response.data && error.response.data.code === 'EMAILINUSE') {
+					this.emailError = 'Email already in use by another user.'
+					this.$store.commit("storeUser", error.response.data.userData);
+				}
 				console.log("Error saving data", error);
 			}
 		}

@@ -20,7 +20,7 @@
 				</v-col>
 			</v-row>
 			<template v-for="(item, index) in drawerItems">
-				<v-list-item :to="item.to" :key="index" @click="$emit('toggleDrawer')">
+				<v-list-item :to="item.to" :key="index">
 					<v-list-item-icon>
 						<v-icon>{{ item.icon }}</v-icon>
 					</v-list-item-icon>
@@ -42,6 +42,8 @@
 </template>
 
 <script>
+import { bus } from '../main';
+
 export default {
 	props: {
 		value: Boolean,
@@ -77,6 +79,7 @@ export default {
 	methods: {
 		//
 		logout() {
+			bus.$emit('clear-interval');
 			this.$store.commit("logout");
 			this.$router.push("/login");
 		},

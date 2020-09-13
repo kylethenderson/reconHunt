@@ -35,7 +35,7 @@
 		<v-row>
 			<v-col class="text-center">
 				<span>Not a Member?</span>
-				<v-btn @click="$emit('toggleView')" text small>Sign Up</v-btn>
+				<v-btn @click="$emit('toggle-view')" text small>Sign Up</v-btn>
 			</v-col>
 		</v-row>
 	</div>
@@ -43,6 +43,7 @@
 
 <script>
 import crypto from "crypto";
+import { bus } from '../../main'
 
 export default {
 	name: "login",
@@ -57,7 +58,7 @@ export default {
 		//
 		rules: {
 			required: val => !!val || "Input is required"
-		}
+		},
 	}),
 	methods: {
 		//
@@ -67,17 +68,17 @@ export default {
 
 			this.loading = true;
 
+			const username = this.username;
 			const hashedPassword = crypto
 				.createHash("sha256")
 				.update(this.password)
 				.digest("hex");
 
 			try {
-				console.log('logging in')
 				const response = await this.$axios.post(
 					`${this.apiPath}/api/user/login`,
 					{
-						username: this.username,
+						username,
 						password: hashedPassword
 					}
 				);
@@ -85,16 +86,16 @@ export default {
 				// commit tokens to the store
 				this.$store.commit("login", response.data);
 
-				this.loading = false;
-
-				this.$refs.loginForm.reset();
-
 				// reroute user to the home page
 				this.$router.push("/");
+
+				// push user to the home page
+				this.$refs.loginForm.reset();
+				bus.$emit('start-interval');
 			} catch (error) {
-				console.log("login error", error);
-				this.loading = false;
 				this.invalidCreds = "Username or Password incorrect";
+			} finally {
+				this.loading = false;
 			}
 		}
 	},

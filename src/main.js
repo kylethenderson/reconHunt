@@ -95,6 +95,7 @@ Vue.filter('formatDateShort', function (value) {
 	return `${month} ${date}`;
 })
 
+export const bus = new Vue();
 new Vue({
 	vuetify,
 	router,

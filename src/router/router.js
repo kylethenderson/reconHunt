@@ -3,13 +3,14 @@ import VueRouter from 'vue-router'
 import routes from './routes';
 import store from '../store/store'
 import jwt from 'jsonwebtoken'
+import bus from '../main'
 
 Vue.use(VueRouter);
 
 const tokenIsValid = (path) => {
 	// if there's a token or we're at login page.
 	// add more later - like token exp check, refresh token interval, etc 
-	if (localStorage.rHToken) return true
+	if (localStorage.rHToken) return true;
 	// 
 	return false
 }
@@ -30,8 +31,9 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-	if (!tokenIsValid(to.path) && to.path !== '/login') return next({ path: '/login' })
+	if (!tokenIsValid(to.path) && to.path !== '/login' ) return next({ path: '/login' })
 	if (requiresLogout()) {
+		bus.$emit('clear-interval');
 		store.commit('logout');
 		return next({ path: '/login' })
 	}

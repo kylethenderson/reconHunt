@@ -13,8 +13,8 @@
 							<h1 color="primary">{{ login ? 'Login' : 'Register' }}</h1>
 						</v-col>
 					</v-row>
-					<Login v-if="login" @toggleView="toggleView" />
-					<Register v-else @toggleView="toggleView" />
+					<Login v-if="login" @toggle-view="toggleView" />
+					<Register v-else @toggle-view="toggleView" />
 				</v-card>
 			</v-col>
 		</v-row>
