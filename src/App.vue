@@ -38,20 +38,19 @@ export default {
 				await refreshTokens(localStorage.rHRefreshToken);
 			}
 			// start the interval for getting new tokens when expired
-			console.log('starting interval')
 			this.startRefreshInterval();
 		},
 		startRefreshInterval() {
 			// check every second for expired token,
 			// once expired, get new ones
-			this.refreshInterval = setInterval(() => {
+			this.refreshInterval = setInterval(async () => {
 				const decoded = jwt.decode(localStorage.rHToken);
 				if (!decoded) {
 					clearInterval(this.refreshInterval);
 					return;
 				}
 				if (decoded.exp * 1000 < Date.now())
-					refreshTokens(localStorage.rHRefreshToken);
+					await refreshTokens(localStorage.rHRefreshToken);
 			}, 1000);
 		}
 	},
@@ -61,7 +60,6 @@ export default {
 	created() {
 		// start interval when emitted from login and register
 		bus.$on('start-interval', (value) => {
-			console.log('starting interval');
 			this.startRefreshInterval();
 		});
 		bus.$on('clear-interval', (value) => {

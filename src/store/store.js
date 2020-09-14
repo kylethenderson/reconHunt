@@ -2,10 +2,15 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 import jwt from 'jsonwebtoken'
+import VuexPersist from 'vuex-persist'
 
 const apiPath = process.env.VUE_APP_BASE_PATH;
 
 Vue.use(Vuex);
+
+const vuexLocal = new VuexPersist({
+	storage: window.localStorage
+})
 
 const decodeToken = (token) => {
 	const decoded = jwt.decode(token);
@@ -104,7 +109,8 @@ const store = new Vuex.Store({
 				else state.user[key] = payload[key]
 			})
 		}
-	}
+	},
+	plugins: [vuexLocal.plugin]
 });
 
 export default store;
