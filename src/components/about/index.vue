@@ -1,6 +1,11 @@
 <template>
 	<v-container>
 		<v-row>
+			<v-col>
+				<v-img src="../../assets/mountainOnly.png"></v-img>
+			</v-col>
+		</v-row>
+		<v-row>
 			<v-col cols="12">
 				<span class="subheading">At Recon Hunt, we are true sportsmen with a passion for the outdoors.</span>
 			</v-col>
