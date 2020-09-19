@@ -218,7 +218,7 @@ export default {
 			// register user
 			try {
 				await this.$axios.post(
-					`${this.apiPath}/api/user/register`,
+					`${this.apiPath}/user/register`,
 					registerObject
 				);
 
@@ -232,7 +232,7 @@ export default {
 				//login the new user
 				try {
 					const loginResponse = await this.$axios.post(
-						`${this.apiPath}/api/user/login`,
+						`${this.apiPath}/user/login`,
 						{
 							username,
 							password: hashedPassword,

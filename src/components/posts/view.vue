@@ -134,7 +134,7 @@ export default {
 			try {
 				const response = await this.$axios({
 					method: "get",
-					url: `${this.apiPath}/api/post/view`,
+					url: `${this.apiPath}/post/view`,
 					params: {
 						id: this.$route.params.id
 					}

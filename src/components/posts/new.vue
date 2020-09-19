@@ -360,7 +360,7 @@ export default {
 			try {
 				await this.$axios({
 					method: "post",
-					url: `${this.apiPath}/api/post/create`,
+					url: `${this.apiPath}/post/create`,
 					data: formData,
 					headers: { "Content-Type": "multipart/form-data" }
 				});

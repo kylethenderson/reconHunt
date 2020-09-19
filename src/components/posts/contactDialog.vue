@@ -68,7 +68,7 @@ export default {
 			try {
 				const response = await this.$axios({
 					method: "post",
-					url: `${this.apiPath}/api/post/contact`,
+					url: `${this.apiPath}/post/contact`,
 					data
 				});
 				const { username } = response.data;

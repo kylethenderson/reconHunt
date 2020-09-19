@@ -62,7 +62,7 @@ export default {
 				//
 				await this.$axios({
 					method: "post",
-					url: `${this.apiPath}/api/user/contact`,
+					url: `${this.apiPath}/user/contact`,
 					data,
 				});
 				this.dialogs.success = true;

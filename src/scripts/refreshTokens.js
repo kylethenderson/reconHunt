@@ -9,7 +9,7 @@ const refreshTokens = async (token) => {
 		// try to refresh tokens
 		const tokens = await axios({
 			method: "post",
-			url: `${refreshPath}/api/user/refreshToken`,
+			url: `${refreshPath}/user/refreshToken`,
 			data: {
 				token
 			}

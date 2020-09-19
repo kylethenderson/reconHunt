@@ -134,7 +134,7 @@ export default {
 				//
 				const response = await this.$axios({
 					method: "get",
-					url: `${this.apiPath}/api/post/list`,
+					url: `${this.apiPath}/post/list`,
 					params: fetchObject,
 				});
 				const { total, posts } = response.data;

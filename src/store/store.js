@@ -63,7 +63,7 @@ const store = new Vuex.Store({
 			// remove refresh token from user in db
 			axios({
 				method: 'post',
-				url: `${apiPath}/api/user/logout`,
+				url: `${apiPath}/user/logout`,
 				headers: {
 					Authorization: `Bearer ${state.auth.token}`
 				}

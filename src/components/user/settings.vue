@@ -182,7 +182,7 @@ export default {
 
 				const response = await this.$axios({
 					method: "put",
-					url: `${this.apiPath}/api/user/settings`,
+					url: `${this.apiPath}/user/settings`,
 					data,
 					headers: {
 						authorization: `Bearer ${this.$store.state.auth.token}`,

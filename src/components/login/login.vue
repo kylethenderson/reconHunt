@@ -76,7 +76,7 @@ export default {
 
 			try {
 				const response = await this.$axios.post(
-					`${this.apiPath}/api/user/login`,
+					`${this.apiPath}/user/login`,
 					{
 						username,
 						password: hashedPassword
