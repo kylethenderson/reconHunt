@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 import routes from './routes';
 import store from '../store/store'
 import jwt from 'jsonwebtoken'
-import bus from '../main'
+import { bus } from '../main'
 
 Vue.use(VueRouter);
 
