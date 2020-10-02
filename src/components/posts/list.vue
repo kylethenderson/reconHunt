@@ -37,7 +37,7 @@
 				</v-row>
 				<v-row v-if="post.images.length" justify="center">
 					<v-col cols="10" class="py-0">
-						<v-img :src="`${imagePath}/images/thumbnail_${post.images[0].filename}`"></v-img>
+						<v-img :src="`/images/thumbnail_${post.images[0].filename}`"></v-img>
 					</v-col>
 				</v-row>
 				<v-card-text class="py-0">

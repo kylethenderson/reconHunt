@@ -60,7 +60,7 @@
 		<v-row>
 			<v-col v-for="(image, index) in post.images" :key="index">
 				<img
-					:src="`${imagePath}/images/thumbnail_${image.filename}`"
+					:src="`/images/thumbnail_${image.filename}`"
 					@click="viewImage(image)"
 					class="pointer"
 				/>

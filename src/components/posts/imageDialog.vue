@@ -7,7 +7,7 @@
 					<v-icon>mdi-close</v-icon>
 				</v-btn>
 			</v-toolbar>
-			<v-img :src="`${imagePath}/images/${image.filename}`"></v-img>
+			<v-img :src="`/images/${image.filename}`"></v-img>
 		</v-card>
 	</v-dialog>
 </template>
