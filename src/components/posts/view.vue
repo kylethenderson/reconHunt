@@ -60,7 +60,7 @@
 		<v-row>
 			<v-col v-for="(image, index) in post.images" :key="index">
 				<img
-					:src="`${apiPath}/images/thumbnail_${image.filename}`"
+					:src="`${imagePath}/images/thumbnail_${image.filename}`"
 					@click="viewImage(image)"
 					class="pointer"
 				/>
@@ -96,7 +96,7 @@ import ImageDialog from "./imageDialog";
 export default {
 	components: {
 		ContactDialog,
-		ImageDialog
+		ImageDialog,
 	},
 	data: () => ({
 		post: null,
@@ -104,20 +104,21 @@ export default {
 			contact: false,
 			success: false,
 			error: false,
-			image: false
+			image: false,
 		},
 		title: {
 			success: null,
-			error: null
+			error: null,
 		},
 		text: {
 			success: null,
-			error: null
+			error: null,
 		},
 
 		selectedImage: {},
 		//
-		apiPath: process.env.VUE_APP_BASE_PATH
+		apiPath: process.env.VUE_APP_BASE_PATH,
+		imagePath: process.env.VUE_APP_IMAGE_PATH,
 	}),
 	computed: {
 		categories() {
@@ -126,7 +127,7 @@ export default {
 		},
 		imageDialog() {
 			return this.dialogs.image;
-		}
+		},
 	},
 	methods: {
 		//
@@ -136,8 +137,8 @@ export default {
 					method: "get",
 					url: `${this.apiPath}/post/view`,
 					params: {
-						id: this.$route.params.id
-					}
+						id: this.$route.params.id,
+					},
 				});
 
 				this.post = response.data;
@@ -160,7 +161,7 @@ export default {
 				this.text.error =
 					"There was an error sending the email. Please try again later.";
 			}
-		}
+		},
 	},
 	mounted() {
 		this.fetchPost();
@@ -170,9 +171,9 @@ export default {
 			immediate: true,
 			handler(value) {
 				if (!value) this.selectedImage = {};
-			}
-		}
-	}
+			},
+		},
+	},
 };
 </script>
 
