@@ -35,11 +35,6 @@
 						<h4>{{ post.city | capitalizeAll }}, {{ post.state }}</h4>
 					</v-col>
 				</v-row>
-				<v-row v-if="post.images.length" justify="center">
-					<v-col cols="10" class="py-0">
-						<v-img :src="`/images/thumbnail_${post.images[0].filename}`"></v-img>
-					</v-col>
-				</v-row>
 				<v-card-text class="py-0">
 					<v-row>
 						<v-col cols="12">
@@ -64,6 +59,11 @@
 						</v-col>
 					</v-row>
 				</v-card-text>
+				<v-row v-if="post.images.length" justify="center">
+					<v-col cols="9" class="py-0">
+						<v-img :src="`/images/thumbnail_${post.images[0].filename}`"></v-img>
+					</v-col>
+				</v-row>
 				<v-card-actions>
 					<v-spacer></v-spacer>
 					<v-btn @click.stop="viewPost(post)" text style="z-index: 0 !important;">
