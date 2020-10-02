@@ -7,7 +7,7 @@
 					<v-icon>mdi-close</v-icon>
 				</v-btn>
 			</v-toolbar>
-			<v-img :src="`${apiPath}/images/${image.filename}`"></v-img>
+			<v-img :src="`${imagePath}/images/${image.filename}`"></v-img>
 		</v-card>
 	</v-dialog>
 </template>
@@ -20,7 +20,8 @@ export default {
 	},
 	data: () => ({
 		//Î
-		apiPath: process.env.VUE_APP_BASE_PATH
+		apiPath: process.env.VUE_APP_BASE_PATH,
+		imagePath: process.env.VUE_APP_IMAGE_PATH,
 	})
 };
 </script>

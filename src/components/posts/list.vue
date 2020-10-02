@@ -15,7 +15,7 @@
 			<v-col v-if="!errors.fetch" cols="2" class="mt-12" align-self-center>
 				<v-progress-circular size="60" indeterminate color="primary"></v-progress-circular>
 			</v-col>
-			<v-col v-else-if="!errors.fetch && !fetchingPosts" cols="6" class="text-center">
+			<v-col v-else-if="!fetchingPosts" cols="6" class="text-center">
 				<h3>No listings found.</h3>
 			</v-col>
 		</v-row>
@@ -37,7 +37,7 @@
 				</v-row>
 				<v-row v-if="post.images.length" justify="center">
 					<v-col cols="10" class="py-0">
-						<v-img :src="`${apiPath}/images/${post.images[0].filename}`"></v-img>
+						<v-img :src="`${imagePath}/images/${post.images[0].filename}`"></v-img>
 					</v-col>
 				</v-row>
 				<v-card-text class="py-0">
@@ -99,6 +99,7 @@ export default {
 		searchString: null,
 		//
 		apiPath: process.env.VUE_APP_BASE_PATH || "http://localhost:3000",
+		imagePath: process.env.VUE_APP_IMAGE_PATH,
 	}),
 	methods: {
 		//
