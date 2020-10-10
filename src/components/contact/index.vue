@@ -22,11 +22,13 @@
 			v-model="dialogs.success"
 			title="Email Sent"
 			text="Thank you for your feedback. We will review and contact you if necessary."
+			@input="$router.push('/posts/list')"
 		/>
 		<ErrorDialog
 			v-model="dialogs.error"
 			title="Error"
 			text="There was an error sending the email. Please try later."
+			@input="$router.push('/posts/list')"
 		/>
 	</div>
 </template>
@@ -73,7 +75,6 @@ export default {
 				this.submitting = false;
 				this.title = null;
 				this.message = null;
-				this.$router.push('/posts/list');
 			}
 		},
 	},
