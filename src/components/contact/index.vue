@@ -58,7 +58,6 @@ export default {
 				message: this.message,
 			};
 			try {
-				console.log(data);
 				//
 				await this.$axios({
 					method: "post",
@@ -74,6 +73,7 @@ export default {
 				this.submitting = false;
 				this.title = null;
 				this.message = null;
+				this.$router.push('/posts/list');
 			}
 		},
 	},
